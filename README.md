@@ -1,5 +1,7 @@
 # react-fullpage
 
+0.0.0.1 Alpha Version. Not for production. 
+
 > Create Beautiful Fullscreen Scrolling Websites
 
 [![NPM](https://img.shields.io/npm/v/react-fullpage.svg)](https://www.npmjs.com/package/react-fullpage) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)

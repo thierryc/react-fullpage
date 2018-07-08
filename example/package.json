@@ -1,7 +1,7 @@
 {
   "name": "react-fullpage-example",
   "homepage": "https://thierryc.github.io/react-fullpage",
-  "version": "0.0.0",
+  "version": "0.0.0.1",
   "private": true,
   "license": "MIT",
   "dependencies": {

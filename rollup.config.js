@@ -4,6 +4,8 @@ import external from 'rollup-plugin-peer-deps-external'
 import postcss from 'rollup-plugin-postcss'
 import resolve from 'rollup-plugin-node-resolve'
 import url from 'rollup-plugin-url'
+import postcssNested from 'postcss-nested'
+import postcssCssnext from 'postcss-nested'
 
 import pkg from './package.json'
 
@@ -12,17 +14,23 @@ export default {
   output: [
     {
       file: pkg.main,
-      format: 'cjs'
+      format: 'cjs',
+      exports: 'named'
     },
     {
       file: pkg.module,
-      format: 'es'
+      format: 'es',
+      exports: 'named'
     }
   ],
   plugins: [
     external(),
     postcss({
-      modules: true
+      modules: true,
+      plugins: [
+        postcssNested(),
+        postcssCssnext()
+      ]
     }),
     url(),
     babel({

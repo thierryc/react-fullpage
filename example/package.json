@@ -1,14 +1,14 @@
 {
   "name": "react-fullpage-example",
   "homepage": "https://thierryc.github.io/react-fullpage",
-  "version": "0.0.0.1",
+  "version": "0.0.1",
   "private": true,
   "license": "MIT",
   "dependencies": {
     "prop-types": "^15.6.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "react-fullpage": "*",
+    "@ap.cx/react-fullpage": "^0.0.1",
     "react-scripts": "^1.1.1"
   },
   "scripts": {

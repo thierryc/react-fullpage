@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import Fullpage, { FullpageSection } from 'react-fullpage'
+import Fullpage, { FullpageSection } from '@ap.cx/react-fullpage'
 
 export default class App extends Component {
   render () {

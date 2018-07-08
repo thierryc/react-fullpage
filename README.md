@@ -1,15 +1,22 @@
-# react-fullpage
+# @ap.cx/react-fullpage
 
-0.0.0.1 Alpha Version. Not for production. 
+0.0.0.1 Alpha Version. Not for production.
+
+## Features
+
+- Simple
+- Mobile ready
+- Drived by the scroll
+- CSS animation
 
 > Create Beautiful Fullscreen Scrolling Websites
 
-[![NPM](https://img.shields.io/npm/v/react-fullpage.svg)](https://www.npmjs.com/package/react-fullpage) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![NPM](https://img.shields.io/npm/v/@ap.cx/react-fullpage.svg)](https://www.npmjs.com/package/react-fullpage) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 ## Install
 
 ```bash
-npm install --save react-fullpage
+npm install --save @ap.cx/react-fullpage
 ```
 
 ## Usage
@@ -17,7 +24,7 @@ npm install --save react-fullpage
 ```jsx
 import React, { Component } from 'react'
 
-import MyComponent from 'react-fullpage'
+import MyComponent from '@ap.cx/react-fullpage'
 
 class Example extends Component {
   render () {

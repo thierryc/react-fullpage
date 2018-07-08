@@ -1,6 +1,6 @@
 {
-  "name": "react-fullpage",
-  "version": "0.0.0.1",
+  "name": "@ap.cx/react-fullpage",
+  "version": "0.0.1",
   "description": "Create Beautiful Fullscreen Scrolling Websites",
   "author": "thierryc",
   "license": "MIT",

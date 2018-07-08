@@ -75,9 +75,7 @@ class Fullpage extends Component {
       className = '',
       transitionTiming = 700,
     } = this.props
-
-    console.log(`translateY(${this.state.translateY}px)`);
-
+    
     return (
       <div style={{ position: 'relative', backgroundColor: 'pink' }} ref={this.driver}>
         <div className={styles.fullpageWarper} style={{ ...warperStyle }} ref={this.warperRef}>

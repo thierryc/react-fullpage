@@ -1,5 +1,7 @@
 # @ap.cx/react-fullpage
 
+https://thierryc.github.io/react-fullpage/
+
 0.0.0.1 Alpha Version. Not for production.
 
 ## Features
@@ -8,8 +10,9 @@
 - Mobile ready
 - Drived by the scroll
 - CSS animation
+- Very Small
 
-> Create Beautiful Fullscreen Scrolling Websites
+> Create Fullscreen Scrolling Websites
 
 [![NPM](https://img.shields.io/npm/v/@ap.cx/react-fullpage.svg)](https://www.npmjs.com/package/react-fullpage) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 

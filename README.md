@@ -2,7 +2,7 @@
 
 https://thierryc.github.io/react-fullpage/
 
-0.0.0.1 Alpha Version. Not for production.
+0.0.1 Alpha Version. Not for production.
 
 ## Features
 

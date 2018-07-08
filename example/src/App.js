@@ -3,8 +3,9 @@ import Fullpage, { FullpageSection } from '@ap.cx/react-fullpage'
 
 export default class App extends Component {
   render () {
+
     return (
-      <Fullpage>
+      <Fullpage onChange={console.log}>
         <FullpageSection style={{
           backgroundColor: 'lime',
           color: 'darkGreen',
@@ -15,7 +16,7 @@ export default class App extends Component {
           justifyContent: 'center',
         }}>
           <div>
-            <h1 style={{fontSize: '4em'}}>Fullpage React Component</h1>
+            <h1 style={{fontSize: '4em'}}>React Fullpage</h1>
             <h2 style={{fontSize: '2em'}}>Create Fullscreen Scrolling Websites</h2>
           </div>
         </FullpageSection>

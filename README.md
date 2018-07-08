@@ -8,6 +8,7 @@ https://thierryc.github.io/react-fullpage/
 
 - Simple
 - Mobile ready
+- Hide safari's header on Scroll on iphone and ipad
 - Drived by the scroll
 - CSS animation
 - Very Small

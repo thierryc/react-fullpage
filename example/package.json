@@ -8,7 +8,7 @@
     "prop-types": "^15.6.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "@ap.cx/react-fullpage": "^0.0.1",
+    "@ap.cx/react-fullpage": "*",
     "react-scripts": "^1.1.1"
   },
   "scripts": {

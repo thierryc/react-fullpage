@@ -57,7 +57,11 @@ export default class App extends Component {
 
 Special thanks to Browserstack.
 
+<<<<<<< HEAD
 <img src="https://raw.githubusercontent.com/thierryc/react-fullpage/master/static/images/browserstack-logo-600x315.png" alt="Browserstack" style="width: 200px;" width="200"/>
+=======
+![Browserstack](https://raw.githubusercontent.com/thierryc/react-fullpage/master/static/images/browserstack-logo-600x315.png)
+>>>>>>> 793c4410e10e0df1146e4f22a48c54588ba700f8
 
 [![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=)](https://www.browserstack.com/automate/public-build/)
 

@@ -27,7 +27,8 @@ export default class App extends Component {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-        }}>
+        }}
+        onShow={console.log}>
         <h1 style={{fontSize: '4em'}}>2</h1>
         </FullpageSection>
         <FullpageSection style={{

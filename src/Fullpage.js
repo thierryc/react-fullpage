@@ -66,12 +66,22 @@ class Fullpage extends Component {
             currentSlide: slide,
             translateY: slide.el.offsetTop * -1,
           })
+
+          if ( this.state.previousSlide
+          && this.state.previousSlide.slide.props.hasOwnProperty('udid')
+          && this.onHide[this.state.previousSlide.slide.props.udid]
+          && this.onHide[this.state.previousSlide.slide.props.udid].props.hasOwnProperty('onHide')
+          && typeof this.onHide[this.state.previousSlide.slide.props.udid].props.onHide === 'function') {
+            this.onHide[this.state.previousSlide.slide.props.udid].props.onHide(this.state.translateY)
+          }
+
           if ( slide.slide.props.hasOwnProperty('udid')
           && this.onShow[slide.slide.props.udid]
           && this.onShow[slide.slide.props.udid].props.hasOwnProperty('onShow')
           && typeof this.onShow[slide.slide.props.udid].props.onShow === 'function') {
-            this.onShow[slide.slide.props.udid].props.onShow('toto')
+            this.onShow[slide.slide.props.udid].props.onShow(this.state.translateY)
           }
+
           clearTimeout(this.timeout)
           this.timeout = setTimeout(() => this.updateHistory(slide),1000)
         }
@@ -128,8 +138,6 @@ class Fullpage extends Component {
       transitionTiming = 700,
       onChange = null
     } = this.props
-
-
 
     this.children = React.Children.map(children, (child) => {
       const props = {}

@@ -2,6 +2,14 @@ import React, { Component } from 'react'
 import Fullpage, { FullpageSection } from '@ap.cx/react-fullpage'
 
 export default class App extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      backgroundColor: 'coral'
+    }
+  }
+
   render () {
 
     return (
@@ -21,14 +29,23 @@ export default class App extends Component {
           </div>
         </FullpageSection>
         <FullpageSection style={{
-          backgroundColor: 'coral',
+          backgroundColor: this.state.backgroundColor,
           color: 'white',
           padding: '1em',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
         }}
-        onShow={console.log}>
+        onShow={(ypos) => {
+          this.setState({
+            backgroundColor: 'teal'
+          })
+        }}
+        onHide={(ypos) => {
+          this.setState({
+            backgroundColor: 'coral'
+          })
+        }}>
         <h1 style={{fontSize: '4em'}}>2</h1>
         </FullpageSection>
         <FullpageSection style={{

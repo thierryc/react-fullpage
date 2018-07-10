@@ -18,12 +18,10 @@ class FullpageSection extends Component {
   }
 
   sectionDidShow() {
-    console.log('onShow');
     this.onShow();
   }
 
   sectionDidHide() {
-    console.log('onHide');
     this.onHide();
   }
 

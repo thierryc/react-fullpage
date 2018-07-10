@@ -25,6 +25,7 @@ class Fullpage extends Component {
     this.state = {
       translateY: 0,
       currentSlide: null,
+      transitionTiming: 700,
     }
     this.onShow = {}
     this.onHide = {}
@@ -45,6 +46,9 @@ class Fullpage extends Component {
       window.addEventListener('scroll', this.handleScroll)
       window.addEventListener('resize', this.handleResize)
     }
+    if(this.props.transitionTiming && this.state.transitionTiming != this.props.transitionTiming) {
+      this.setState({ transitionTiming: this.props.transitionTiming })
+    }
   }
 
   componentWillUnmount() {
@@ -61,29 +65,29 @@ class Fullpage extends Component {
       window.requestAnimationFrame(() => {
         const slide = this.slides.find(slide => lastKnownScrollPosition < slide.el.offsetTop + slide.el.offsetHeight * 0.5)
         if(slide && this.state.currentSlide !== slide){
+          const previousSlide = this.state.currentSlide
           this.setState({
-            previousSlide: this.state.currentSlide,
+            previousSlide: previousSlide,
             currentSlide: slide,
             translateY: slide.el.offsetTop * -1,
           })
-
-          if ( this.state.previousSlide
-          && this.state.previousSlide.slide.props.hasOwnProperty('udid')
-          && this.onHide[this.state.previousSlide.slide.props.udid]
-          && this.onHide[this.state.previousSlide.slide.props.udid].props.hasOwnProperty('onHide')
-          && typeof this.onHide[this.state.previousSlide.slide.props.udid].props.onHide === 'function') {
-            this.onHide[this.state.previousSlide.slide.props.udid].props.onHide(this.state.translateY)
+          if (
+            previousSlide
+            && previousSlide.slide.props.hasOwnProperty('udid')
+            && this.onHide[previousSlide.slide.props.udid]
+            && this.onHide[previousSlide.slide.props.udid].props.hasOwnProperty('onHide')
+            && typeof this.onHide[previousSlide.slide.props.udid].props.onHide === 'function') {
+            setTimeout(() => this.onHide[previousSlide.slide.props.udid].props.onHide(this.state.translateY), this.state.transitionTiming)
           }
-
-          if ( slide.slide.props.hasOwnProperty('udid')
-          && this.onShow[slide.slide.props.udid]
-          && this.onShow[slide.slide.props.udid].props.hasOwnProperty('onShow')
-          && typeof this.onShow[slide.slide.props.udid].props.onShow === 'function') {
+          if (
+            slide.slide.props.hasOwnProperty('udid')
+            && this.onShow[slide.slide.props.udid]
+            && this.onShow[slide.slide.props.udid].props.hasOwnProperty('onShow')
+            && typeof this.onShow[slide.slide.props.udid].props.onShow === 'function') {
             this.onShow[slide.slide.props.udid].props.onShow(this.state.translateY)
           }
-
           clearTimeout(this.timeout)
-          this.timeout = setTimeout(() => this.updateHistory(slide),1000)
+          this.timeout = setTimeout(() => this.updateHistory(slide),this.state.transitionTiming)
         }
         this.ticking = false
       });
@@ -135,7 +139,7 @@ class Fullpage extends Component {
         right: 0,
       },
       className = '',
-      transitionTiming = 700,
+      transitionTiming = this.state.transitionTiming,
       onChange = null
     } = this.props
 
@@ -156,18 +160,17 @@ class Fullpage extends Component {
 
     return (
       <div>
-        <div style={{ position: 'relative', backgroundColor: 'pink' }} ref={this.driver}></div>
+        <div style={{ position: 'relative' }} ref={this.driver}></div>
         <div className={styles.fullpageWarper} style={{ ...warperStyle }} ref={this.warperRef}>
           <div className={styles.fullpage} style={{
-            ...style,
             transition: `transform ${transitionTiming}ms cubic-bezier(0.645, 0.045, 0.355, 1.000)`,
+            ...style,
             transform: `translateY(${(this.state.translateY)}px)`
           }} ref={this.fullpageRef}>
             { this.children }
             { navigation && <Navigation data={children}/> }
           </div>
         </div>
-
       </div>
     )
   }

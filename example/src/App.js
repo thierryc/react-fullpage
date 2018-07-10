@@ -10,10 +10,12 @@ export default class App extends Component {
     }
   }
 
+  onChange() {}
+
   render () {
 
     return (
-      <Fullpage onChange={console.log}>
+      <Fullpage onChange={this.onChange}>
         <FullpageSection style={{
           backgroundColor: 'lime',
           color: 'darkGreen',
@@ -35,13 +37,14 @@ export default class App extends Component {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          transition: 'background-color 1000ms linear',
         }}
-        onShow={(ypos) => {
+        onShow={() => {
           this.setState({
             backgroundColor: 'teal'
           })
         }}
-        onHide={(ypos) => {
+        onHide={() => {
           this.setState({
             backgroundColor: 'coral'
           })

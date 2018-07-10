@@ -62,6 +62,7 @@ Special thanks to Browserstack.
 [![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=)](https://www.browserstack.com/automate/public-build/)
 
 
+
 ## License
 
 MIT © [thierryc](https://github.com/thierryc)

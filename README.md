@@ -55,12 +55,11 @@ export default class App extends Component {
 
 ## Thanks
 
-Special thanks to Browserstack.
+Special thanks to BrowserStack.
 
-<img src="https://raw.githubusercontent.com/thierryc/react-fullpage/master/static/images/browserstack-logo-600x315.png" alt="Browserstack" style="width: 200px;" width="200"/>
+[![Browserstack](https://raw.githubusercontent.com/thierryc/react-fullpage/master/static/images/browserstack.png)](https://www.browserstack.com/users/sign_up)
 
 [![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=)](https://www.browserstack.com/automate/public-build/)
-
 
 
 ## License

@@ -53,6 +53,14 @@ export default class App extends Component {
 
 ```
 
+## Thanks
+
+Special thanks to Browserstack.
+
+![BrowserStack](https://dgzoq9b5asjg1.cloudfront.net/production/images/static/header/header-logo.svg)
+
+[![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=)](https://www.browserstack.com/automate/public-build/)
+
 ## License
 
 MIT © [thierryc](https://github.com/thierryc)

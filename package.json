@@ -14,6 +14,7 @@
     "build": "rollup -c",
     "start": "rollup -c -w",
     "prepare": "npm run build",
+    "patch": "npm version patch && git add *; && git commit -m \"prepublish\" && git push",
     "predeploy": "cd example && npm install && npm update && npm run build",
     "deploy": "gh-pages -d example/build"
   },

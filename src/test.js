@@ -1,7 +1,20 @@
-import ExampleComponent from './'
+import FullpageDefault from './'
+import { Fullpage, FullpageSection } from './'
 
-describe('ExampleComponent', () => {
+describe('FullpageDefault', () => {
   it('is truthy', () => {
-    expect(ExampleComponent).toBeTruthy()
+    expect(FullpageDefault).toBeTruthy()
+  })
+})
+
+describe('Fullpage', () => {
+  it('is truthy', () => {
+    expect(Fullpage).toBeTruthy()
+  })
+})
+
+describe('FullpageSection', () => {
+  it('is truthy', () => {
+    expect(FullpageSection).toBeTruthy()
   })
 })

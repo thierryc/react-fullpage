@@ -60,9 +60,10 @@ class Fullpage extends Component {
   }
 
   handleScroll(e) {
-    const lastKnownScrollPosition = window.scrollY
+    const lastKnownScrollPosition = window.pageYOffset
     if (!this.ticking) {
       window.requestAnimationFrame(() => {
+        console.log(lastKnownScrollPosition);
         const slide = this.slides.find(slide => lastKnownScrollPosition < slide.el.offsetTop + slide.el.offsetHeight * 0.5)
         if(slide && this.state.currentSlide !== slide){
           const previousSlide = this.state.currentSlide

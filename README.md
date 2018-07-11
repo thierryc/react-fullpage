@@ -55,15 +55,9 @@ export default class App extends Component {
 
 ## Thanks
 
-Special thanks to BrowserStack.
-
+Special thanks to [BrowserStack](https://www.browserstack.com/users/sign_up) for sponsoring this plugin. 👍
 
 [![Browserstack](https://raw.githubusercontent.com/thierryc/react-fullpage/master/static/images/browserstack@2x.png)](https://www.browserstack.com/users/sign_up)
-
-### Soon
-
-[![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=)](https://www.browserstack.com/automate/public-build/)
-
 
 ## License
 

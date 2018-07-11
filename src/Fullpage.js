@@ -164,8 +164,9 @@ class Fullpage extends Component {
         <div className={styles.fullpageWarper} style={{ ...warperStyle }} ref={this.warperRef}>
           <div className={styles.fullpage} style={{
             transition: `transform ${transitionTiming}ms cubic-bezier(0.645, 0.045, 0.355, 1.000)`,
+            backfaceVisibility: 'hidden';
             ...style,
-            transform: `translateY(${(this.state.translateY)}px)`
+            transform:  `scale(1), translate3D(0, ${(this.state.translateY)}px, 0)`
           }} ref={this.fullpageRef}>
             { this.children }
             { navigation && <Navigation data={children}/> }

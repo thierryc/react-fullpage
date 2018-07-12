@@ -27,6 +27,7 @@ class Fullpage extends Component {
       currentSlide: null,
       transitionTiming: 700,
     }
+    this.lastKnownScrollPosition = 0
     this.onShow = {}
     this.onHide = {}
     this.handleScroll = this.handleScroll.bind(this)
@@ -38,9 +39,9 @@ class Fullpage extends Component {
     this.driver.current.style.height = `${this.fullpageRef.current.clientHeight}px`;
     //const children = Array.from(this.fullpageRef.current.children)
     //this.slides = children.filter(child => child.hasAttribute('isslide'))
-    this.slides = this.children.filter(child => child.type === Section).map(slide => {
+    this.slides = this.children.filter(child => child.type === Section).map((slide, index) => {
       const el = slide.ref.current.ref.current
-      return {slide, el}
+      return {slide, el, index}
     })
     if (typeof window !== 'undefined')  {
       window.addEventListener('scroll', this.handleScroll)
@@ -60,10 +61,9 @@ class Fullpage extends Component {
   }
 
   handleScroll(e) {
-    const lastKnownScrollPosition = window.pageYOffset
     if (!this.ticking) {
       window.requestAnimationFrame(() => {
-        console.log(lastKnownScrollPosition);
+        const lastKnownScrollPosition = window.pageYOffset
         const slide = this.slides.find(slide => lastKnownScrollPosition < slide.el.offsetTop + slide.el.offsetHeight * 0.5)
         if(slide && this.state.currentSlide !== slide){
           const previousSlide = this.state.currentSlide
@@ -90,6 +90,7 @@ class Fullpage extends Component {
           clearTimeout(this.timeout)
           this.timeout = setTimeout(() => this.updateHistory(slide),this.state.transitionTiming)
         }
+        this.lastKnownScrollPosition = lastKnownScrollPosition
         this.ticking = false
       });
     }

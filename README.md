@@ -2,7 +2,11 @@
 
 https://thierryc.github.io/react-fullpage/
 
-0.0.1 Alpha Version. Not for production.
+0.0.7 Alpha Version. **Not for production**.
+
+Try "features/variableHeight" branch. 
+
+https://github.com/thierryc/react-fullpage/tree/features/variableHeight
 
 ## Features
 
@@ -11,6 +15,7 @@ https://thierryc.github.io/react-fullpage/
 - Hide safari's header on Scroll on iphone and ipad
 - Drived by the scroll
 - CSS animation
+- GPU/CPU swtich
 - Very Small
 
 > Create Fullscreen Scrolling Websites

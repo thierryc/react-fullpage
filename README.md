@@ -58,6 +58,10 @@ export default class App extends Component {
 
 ```
 
+## Mobile First
+
+![Android Phone](https://raw.githubusercontent.com/thierryc/react-fullpage/master/static/images/android-phone.jpg)
+
 ## Thanks
 
 Special thanks to [BrowserStack](https://www.browserstack.com/users/sign_up) for sponsoring this plugin. 👍

@@ -2,7 +2,7 @@
 
 https://thierryc.github.io/react-fullpage/
 
-0.0.7 Alpha Version. **Not for production**.
+0.0.8 Alpha Version. **Not for production**.
 
 Try "features/variableHeight" branch.
 

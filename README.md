@@ -13,6 +13,7 @@ https://github.com/thierryc/react-fullpage/tree/features/variableHeight
 - Simple
 - Mobile ready
 - Hide safari's header on Scroll on iphone and ipad
+- Hide Google Chrome's header on Scroll on iOS and Android
 - Drived by the scroll
 - CSS animation
 - GPU/CPU swtich
@@ -57,6 +58,20 @@ export default class App extends Component {
 }
 
 ```
+
+### For IE 
+
+```
+
+npm i babel-polyfill
+
+```
+
+```
+import "babel-polyfill";
+
+```
+
 
 ## Mobile First
 

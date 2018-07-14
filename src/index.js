@@ -1,11 +1,8 @@
-/**
- * Fullpage Lib
- */
-import Fullpage from './Fullpage'
-import FullpageSection from './FullpageSection'
+import Fullpage from './Fullpage';
+import FullpageSection from './FullpageSection';
 
-export default Fullpage
+export default Fullpage;
 export {
   Fullpage,
-  FullpageSection
-}
+  FullpageSection,
+};

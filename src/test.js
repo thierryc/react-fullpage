@@ -1,20 +1,13 @@
-import FullpageDefault from './'
-import { Fullpage, FullpageSection } from './'
-
-describe('FullpageDefault', () => {
-  it('is truthy', () => {
-    expect(FullpageDefault).toBeTruthy()
-  })
-})
+import { Fullpage, FullpageSection } from '.';
 
 describe('Fullpage', () => {
   it('is truthy', () => {
-    expect(Fullpage).toBeTruthy()
-  })
-})
+    expect(Fullpage).toBeTruthy();
+  });
+});
 
 describe('FullpageSection', () => {
   it('is truthy', () => {
-    expect(FullpageSection).toBeTruthy()
-  })
-})
+    expect(FullpageSection).toBeTruthy();
+  });
+});

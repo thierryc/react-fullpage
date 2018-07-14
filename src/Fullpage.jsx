@@ -1,19 +1,27 @@
 /**
  * @class Fullpage
  */
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Section from './FullpageSection';
 import Navigation from './FullpageNavigation';
 
 import styles from './styles.css';
 
-class Fullpage extends Component {
+class Fullpage extends PureComponent {
   static propTypes = {
     children: PropTypes.node.isRequired,
     transitionTiming: PropTypes.number,
-    warperStyle: PropTypes.objectOf(PropTypes.string),
-    style: PropTypes.objectOf(PropTypes.string),
+    warperStyle: PropTypes.objectOf(PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string,
+      PropTypes.bool
+    ])),
+    style: PropTypes.objectOf(PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string,
+      PropTypes.bool
+    ])),
     className: PropTypes.string,
     navigation: PropTypes.bool,
     onChange: PropTypes.func,
@@ -33,7 +41,7 @@ class Fullpage extends Component {
       right: 0,
     },
     className: '',
-    navigation: true,
+    navigation: false,
     onChange: null,
   };
 
@@ -48,7 +56,7 @@ class Fullpage extends Component {
     this.slides = null;
     this.state = {
       translateY: 0,
-      currentSlide: null,
+      currentSlide: null
     };
     this.lastKnownScrollPosition = 0;
     this.onShow = {};
@@ -59,6 +67,7 @@ class Fullpage extends Component {
   }
 
   componentDidMount() {
+    console.log('FULLPAGE 0.0.8 alpha version did mount');
     this.driver.current.style.height = `${this.fullpageRef.current.clientHeight}px`;
     // const children = Array.from(this.fullpageRef.current.children)
     // this.slides = children.filter(child => child.hasAttribute('isslide'))
@@ -89,10 +98,11 @@ class Fullpage extends Component {
         const lastKnownScrollPosition = window.pageYOffset || 0;
 
         const newSlide = this.slides.find(slide => (
-          lastKnownScrollPosition < slide.el.offsetTop + slide.el.offsetHeight * 0.5));
+          lastKnownScrollPosition < slide.el.offsetTop + slide.el.offsetHeight * 0.5)
+        );
 
         if (newSlide && currentSlide !== newSlide) {
-          const translateY = newSlide.el.offsetTop * -1;
+          const translateY = newSlide.el.offsetTop * -1
           const previousSlide = currentSlide;
           this.setState({
             previousSlide,
@@ -102,7 +112,7 @@ class Fullpage extends Component {
 
           if (previousSlide) {
             const { udid: previousSlideUdid = null } = previousSlide.slide.props;
-            if (previousSlideUdid && this.onHide[previousSlideUdid]) {
+            if(previousSlideUdid && this.onHide[previousSlideUdid]) {
               const { onHide = null } = this.onHide[previousSlideUdid].props;
               if (onHide) {
                 setTimeout(() => onHide(translateY), transitionTiming);
@@ -111,14 +121,14 @@ class Fullpage extends Component {
           }
 
           const { udid: newSlideUdid = null } = newSlide.slide.props;
-          if (newSlideUdid && this.onShow[newSlideUdid]) {
+          if(newSlideUdid && this.onShow[newSlideUdid] ) {
             const { onShow = null } = this.onShow[newSlideUdid].props;
             if (onShow) {
               onShow(translateY);
             }
           }
 
-          // this.state.onChange(this.state);
+          //this.state.onChange(this.state);
           clearTimeout(this.timeout);
           this.timeout = setTimeout(() => this.updateHistory(newSlide), transitionTiming);
         }
@@ -170,7 +180,6 @@ class Fullpage extends Component {
       warperStyle,
       className,
       transitionTiming,
-      onChange,
     } = this.props;
 
     this.children = React.Children.map(children, (child) => {
@@ -195,7 +204,7 @@ class Fullpage extends Component {
         <div style={{ position: 'relative' }} ref={this.driver} />
         <div className={styles.fullpageWarper} style={{ ...warperStyle }} ref={this.warperRef}>
           <div
-            className={styles.fullpage}
+            className={[styles.fullpage, className].join(', ')}
             style={{
               transition: `transform ${transitionTiming}ms cubic-bezier(0.645, 0.045, 0.355, 1.000)`,
               ...style,

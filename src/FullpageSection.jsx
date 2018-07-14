@@ -1,23 +1,29 @@
 /**
  * @class FullpageSection
  */
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
-class FullpageSection extends Component {
+class FullpageSection extends PureComponent {
   static propTypes = {
     children: PropTypes.node.isRequired,
-    height: PropTypes.number,
-    style: PropTypes.objectOf(PropTypes.string),
+    height: PropTypes.string,
+    style: PropTypes.objectOf(PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string,
+      PropTypes.bool,
+    ])),
     className: PropTypes.string,
-    onShow: PropTypes.object,
-    onHide: PropTypes.object,
+    onShow: PropTypes.func,
+    onHide: PropTypes.func,
   };
 
   static defaultProps = {
     height: '100vh',
     style: {},
     className: '',
+    onShow: null,
+    onHide: null,
   };
 
   constructor(props) {
@@ -29,11 +35,13 @@ class FullpageSection extends Component {
   }
 
   sectionDidShow() {
-    this.onShow();
+    const { onShow } = this.props;
+    onShow();
   }
 
   sectionDidHide() {
-    this.onHide();
+    const { onHide } = this.props;
+    onHide();
   }
 
   render() {
@@ -42,8 +50,6 @@ class FullpageSection extends Component {
       height,
       style,
       className,
-      onShow = null,
-      onHide = null,
     } = this.props;
 
     return (

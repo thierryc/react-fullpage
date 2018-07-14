@@ -1,6 +1,6 @@
 {
   "name": "@ap.cx/react-fullpage",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Create Beautiful Fullscreen Scrolling Websites",
   "author": "thierryc",
   "license": "MIT",
@@ -14,7 +14,7 @@
     "build": "rollup -c",
     "start": "rollup -c -m -w",
     "prepare": "npm run build",
-    "eslint": "eslint 'src/**/*'",
+    "eslint": "node_modules/eslint/bin/eslint.js 'src/**/*' --fix",
     "predeploy": "cd example && ncu -u && npm install && npm run build",
     "deploy": "gh-pages -d example/build"
   },

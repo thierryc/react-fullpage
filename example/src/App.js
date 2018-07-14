@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Fullpage, { FullpageSection } from '@ap.cx/react-fullpage'
+import "babel-polyfill";
 
 export default class App extends Component {
 
@@ -26,7 +27,7 @@ export default class App extends Component {
           justifyContent: 'center',
         }}>
           <div>
-            <h1 style={{fontSize: '4em'}}>React Fullpage 0.0.7</h1>
+            <h1 style={{fontSize: '4em'}}>React Fullpage 0.0.8</h1>
             <h2 style={{fontSize: '2em'}}>Create Fullscreen Scrolling Websites</h2>
           </div>
         </FullpageSection>

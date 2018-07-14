@@ -4,7 +4,7 @@ https://thierryc.github.io/react-fullpage/
 
 0.0.7 Alpha Version. **Not for production**.
 
-Try "features/variableHeight" branch. 
+Try "features/variableHeight" branch.
 
 https://github.com/thierryc/react-fullpage/tree/features/variableHeight
 
@@ -63,6 +63,10 @@ export default class App extends Component {
 Special thanks to [BrowserStack](https://www.browserstack.com/users/sign_up) for sponsoring this plugin. 👍
 
 [![Browserstack](https://raw.githubusercontent.com/thierryc/react-fullpage/master/static/images/browserstack@2x.png)](https://www.browserstack.com/users/sign_up)
+
+## Hit me up on Twitter
+
+[@Autre_planete](https://twitter.com/Autre_planete?ref=github)
 
 ## License
 

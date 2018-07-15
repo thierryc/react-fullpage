@@ -20,7 +20,8 @@ https://github.com/thierryc/react-fullpage/tree/features/variableHeight
 
 > Create Fullscreen Scrolling Websites
 
-[![NPM](https://img.shields.io/npm/v/@ap.cx/react-fullpage.svg)](https://www.npmjs.com/package/react-fullpage) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![NPM](https://img.shields.io/npm/v/@ap.cx/react-fullpage.svg)](https://www.npmjs.com/package/react-fullpage)
+[![MIT]https://img.shields.io/packagist/l/doctrine/orm.svg](https://github.com/thierryc/react-fullpage/blob/master/LICENSE)
 
 ## Install
 

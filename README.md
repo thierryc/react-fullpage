@@ -22,7 +22,7 @@ https://github.com/thierryc/react-fullpage/tree/features/variableHeight
 > Create Fullscreen Scrolling Websites
 
 [![NPM](https://img.shields.io/npm/v/@ap.cx/react-fullpage.svg)](https://www.npmjs.com/package/react-fullpage)
-[![MIT]https://img.shields.io/packagist/l/doctrine/orm.svg](https://github.com/thierryc/react-fullpage/blob/master/LICENSE)
+[![MIT](https://img.shields.io/packagist/l/doctrine/orm.svg)](https://github.com/thierryc/react-fullpage/blob/master/LICENSE)
 
 ## Install
 
@@ -60,7 +60,7 @@ export default class App extends Component {
 
 ```
 
-### For IE 
+### For IE
 
 ```
 

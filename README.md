@@ -4,6 +4,9 @@ https://thierryc.github.io/react-fullpage/
 
 0.0.8 Alpha Version. **Not for production**.
 
+This project is still in a very **early stage**.
+You shouldn't use this for production unless you really know what you're doing. 🖖
+
 Try "features/variableHeight" branch.
 
 https://github.com/thierryc/react-fullpage/tree/features/variableHeight

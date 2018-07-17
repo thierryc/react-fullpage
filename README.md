@@ -87,10 +87,24 @@ Special thanks to [BrowserStack](https://www.browserstack.com/users/sign_up) for
 
 [![Browserstack](https://raw.githubusercontent.com/thierryc/react-fullpage/master/static/images/browserstack@2x.png)](https://www.browserstack.com/users/sign_up)
 
+## License (MIT)
+
+```
+WWWWWW||WWWWWW
+ W W W||W W W
+      ||
+    ( OO )__________
+     /  |           \
+    /o o|    MIT     \
+    \___/||_||__||_|| *
+         || ||  || ||
+        _||_|| _||_||
+       (__|__|(__|__|
+```
+
+MIT © [thierryc](https://github.com/thierryc)
+Copyright (c) 2018-present anotherplanet.io, hello@anotherplanet.io
+
 ## Hit me up on Twitter
 
 [@Autre_planete](https://twitter.com/Autre_planete?ref=github)
-
-## License
-
-MIT © [thierryc](https://github.com/thierryc)

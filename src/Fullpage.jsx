@@ -15,12 +15,12 @@ class Fullpage extends PureComponent {
     warperStyle: PropTypes.objectOf(PropTypes.oneOfType([
       PropTypes.number,
       PropTypes.string,
-      PropTypes.bool
+      PropTypes.bool,
     ])),
     style: PropTypes.objectOf(PropTypes.oneOfType([
       PropTypes.number,
       PropTypes.string,
-      PropTypes.bool
+      PropTypes.bool,
     ])),
     className: PropTypes.string,
     navigation: PropTypes.bool,
@@ -56,9 +56,11 @@ class Fullpage extends PureComponent {
     this.slides = null;
     this.state = {
       translateY: 0,
-      currentSlide: null
+      currentSlide: null,
     };
     this.lastKnownScrollPosition = 0;
+    this.fullPageHeight = 0;
+    this.viewportHeight = 0;
     this.onShow = {};
     this.onHide = {};
     this.handleScroll = this.handleScroll.bind(this);
@@ -67,8 +69,9 @@ class Fullpage extends PureComponent {
   }
 
   componentDidMount() {
-    console.log('FULLPAGE 0.0.8 alpha version did mount');
-    this.driver.current.style.height = `${this.fullpageRef.current.clientHeight}px`;
+    this.viewportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+    this.fullPageHeight = this.fullpageRef.current.clientHeight;
+    this.driver.current.style.height = `${this.fullPageHeight}px`;
     // const children = Array.from(this.fullpageRef.current.children)
     // this.slides = children.filter(child => child.hasAttribute('isslide'))
     this.slides = this.children.filter(child => child.type === Section).map((slide, index) => {
@@ -98,11 +101,14 @@ class Fullpage extends PureComponent {
         const lastKnownScrollPosition = window.pageYOffset || 0;
 
         const newSlide = this.slides.find(slide => (
-          lastKnownScrollPosition < slide.el.offsetTop + slide.el.offsetHeight * 0.5)
-        );
+          lastKnownScrollPosition < slide.el.offsetTop + (slide.el.offsetHeight * 0.5)));
 
         if (newSlide && currentSlide !== newSlide) {
-          const translateY = newSlide.el.offsetTop * -1
+          // max scroll (this.fullPageHeight - this.viewportHeight)
+          const translateY = Math.max(
+            (this.fullPageHeight - this.viewportHeight) * -1,
+            newSlide.el.offsetTop * -1,
+          );
           const previousSlide = currentSlide;
           this.setState({
             previousSlide,
@@ -112,7 +118,7 @@ class Fullpage extends PureComponent {
 
           if (previousSlide) {
             const { udid: previousSlideUdid = null } = previousSlide.slide.props;
-            if(previousSlideUdid && this.onHide[previousSlideUdid]) {
+            if (previousSlideUdid && this.onHide[previousSlideUdid]) {
               const { onHide = null } = this.onHide[previousSlideUdid].props;
               if (onHide) {
                 setTimeout(() => onHide(translateY), transitionTiming);
@@ -121,14 +127,14 @@ class Fullpage extends PureComponent {
           }
 
           const { udid: newSlideUdid = null } = newSlide.slide.props;
-          if(newSlideUdid && this.onShow[newSlideUdid] ) {
+          if (newSlideUdid && this.onShow[newSlideUdid]) {
             const { onShow = null } = this.onShow[newSlideUdid].props;
             if (onShow) {
               onShow(translateY);
             }
           }
 
-          //this.state.onChange(this.state);
+          // this.state.onChange(this.state);
           clearTimeout(this.timeout);
           this.timeout = setTimeout(() => this.updateHistory(newSlide), transitionTiming);
         }
@@ -142,7 +148,12 @@ class Fullpage extends PureComponent {
   handleResize() {
     if (!this.ticking) {
       window.requestAnimationFrame(() => {
-        this.driver.current.style.height = `${this.fullpageRef.current.clientHeight}px`;
+        this.viewportHeight = Math.max(
+          document.documentElement.clientHeight,
+          window.innerHeight || 0,
+        );
+        this.fullPageHeight = this.fullpageRef.current.clientHeight;
+        this.driver.current.style.height = `${this.fullPageHeight}px`;
         this.ticking = false;
       });
     }
@@ -160,7 +171,6 @@ class Fullpage extends PureComponent {
   subscribeOnHide(uuid, newSlide) {
     this.onHide[uuid] = newSlide;
   }
-
 
   /* eslint-disable */
   uuidv4() {

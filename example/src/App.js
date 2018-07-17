@@ -17,6 +17,7 @@ export default class App extends Component {
 
     return (
       <Fullpage onChange={this.onChange}>
+
         <FullpageSection style={{
           backgroundColor: 'lime',
           color: 'darkGreen',
@@ -31,6 +32,7 @@ export default class App extends Component {
             <h2 style={{fontSize: '2em'}}>Create Fullscreen Scrolling Websites</h2>
           </div>
         </FullpageSection>
+
         <FullpageSection style={{
           backgroundColor: this.state.backgroundColor,
           color: 'white',
@@ -52,6 +54,7 @@ export default class App extends Component {
         }}>
         <h1 style={{fontSize: '4em'}}>2</h1>
         </FullpageSection>
+
         <FullpageSection style={{
           backgroundColor: 'firebrick',
           color: 'white',
@@ -62,6 +65,19 @@ export default class App extends Component {
         }}>
         <h1 style={{fontSize: '4em'}}>3</h1>
         </FullpageSection>
+
+        <FullpageSection style={{
+          backgroundColor: 'orange',
+          color: 'firebrick',
+          height: '80vh',
+          padding: '1em',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <h1 style={{fontSize: '2em'}}>4 Small</h1>
+        </FullpageSection>
+
       </Fullpage>
     )
   }

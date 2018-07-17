@@ -7,6 +7,7 @@ module.exports = {
         "import"
     ],
     "globals": {
-      "window": true
+      "window": true,
+      "document": true
     }
 };

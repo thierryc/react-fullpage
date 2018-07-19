@@ -5,6 +5,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Section from './FullpageSection';
 import Navigation from './FullpageNavigation';
+import keydown from 'react-keydown';
 
 import styles from './styles.css';
 
@@ -43,6 +44,7 @@ class Fullpage extends PureComponent {
     className: '',
     navigation: false,
     onChange: null,
+    desktopForceStep: false,
   };
 
   constructor(props) {
@@ -78,6 +80,9 @@ class Fullpage extends PureComponent {
       const el = slide.ref.current.ref.current;
       return { slide, el, index };
     });
+    this.setState({
+      currentSlide: this.slides[0],
+    });
 
     if (typeof window !== 'undefined') {
       window.addEventListener('scroll', this.handleScroll);
@@ -99,45 +104,10 @@ class Fullpage extends PureComponent {
         const { transitionTiming } = this.props;
         const { currentSlide } = this.state;
         const lastKnownScrollPosition = window.pageYOffset || 0;
-
         const newSlide = this.slides.find(slide => (
-          lastKnownScrollPosition < slide.el.offsetTop + (slide.el.offsetHeight * 0.5)));
-
-        if (newSlide && currentSlide !== newSlide) {
-          // max scroll (this.fullPageHeight - this.viewportHeight)
-          const translateY = Math.max(
-            (this.fullPageHeight - this.viewportHeight) * -1,
-            newSlide.el.offsetTop * -1,
-          );
-          const previousSlide = currentSlide;
-          this.setState({
-            previousSlide,
-            currentSlide: newSlide,
-            translateY,
-          });
-
-          if (previousSlide) {
-            const { udid: previousSlideUdid = null } = previousSlide.slide.props;
-            if (previousSlideUdid && this.onHide[previousSlideUdid]) {
-              const { onHide = null } = this.onHide[previousSlideUdid].props;
-              if (onHide) {
-                setTimeout(() => onHide(translateY), transitionTiming);
-              }
-            }
-          }
-
-          const { udid: newSlideUdid = null } = newSlide.slide.props;
-          if (newSlideUdid && this.onShow[newSlideUdid]) {
-            const { onShow = null } = this.onShow[newSlideUdid].props;
-            if (onShow) {
-              onShow(translateY);
-            }
-          }
-
-          // this.state.onChange(this.state);
-          clearTimeout(this.timeout);
-          this.timeout = setTimeout(() => this.updateHistory(newSlide), transitionTiming);
-        }
+          lastKnownScrollPosition < slide.el.offsetTop + (slide.el.offsetHeight * 0.5))
+        );
+        this.gotoSlide(newSlide, currentSlide);
         this.lastKnownScrollPosition = lastKnownScrollPosition;
         this.ticking = false;
       });
@@ -172,6 +142,72 @@ class Fullpage extends PureComponent {
     this.onHide[uuid] = newSlide;
   }
 
+  @keydown( ['up', 'left'] )
+  gotoPrevious(event){
+    const { currentSlide } = this.state;
+    event.preventDefault();
+    this.gotoSlide(
+      this.slides[ Math.max(0, currentSlide.index - 1) ],
+      currentSlide,
+      true
+    );
+  }
+
+  @keydown( ['down', 'right'] )
+  gotoNext(event){
+    const { currentSlide } = this.state;
+    event.preventDefault();
+    this.gotoSlide(
+      this.slides[ Math.min(this.slides.length - 1, currentSlide.index + 1) ],
+      currentSlide,
+      true
+    );
+  }
+
+  gotoSlide(newSlide, currentSlide, scrollTo = false) {
+    const { transitionTiming } = this.props;
+
+    if (newSlide && currentSlide !== newSlide) {
+      // max scroll (this.fullPageHeight - this.viewportHeight)
+      const translateY = Math.max(
+        (this.fullPageHeight - this.viewportHeight) * -1,
+        newSlide.el.offsetTop * -1,
+      );
+
+      const previousSlide = currentSlide;
+      this.setState({
+        previousSlide,
+        currentSlide: newSlide,
+        translateY,
+      });
+
+      if (previousSlide) {
+        const { udid: previousSlideUdid = null } = previousSlide.slide.props;
+        if (previousSlideUdid && this.onHide[previousSlideUdid]) {
+          const { onHide = null } = this.onHide[previousSlideUdid].props;
+          if (onHide) {
+            setTimeout(() => onHide(translateY), transitionTiming);
+          }
+        }
+      }
+
+      const { udid: newSlideUdid = null } = newSlide.slide.props;
+      if (newSlideUdid && this.onShow[newSlideUdid]) {
+        const { onShow = null } = this.onShow[newSlideUdid].props;
+        if (onShow) {
+          onShow(translateY);
+        }
+      }
+
+      if (scrollTo) {
+        window.scrollTo(0, newSlide.el.offsetTop);
+      }
+      clearTimeout(this.timeout);
+      this.timeout = setTimeout(() => this.updateHistory(newSlide), transitionTiming);
+      this.props.onChange(this.state);
+    }
+  }
+
   /* eslint-disable */
   uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
@@ -190,6 +226,8 @@ class Fullpage extends PureComponent {
       warperStyle,
       className,
       transitionTiming,
+      onChange,
+      desktopForceStep,
     } = this.props;
 
     this.children = React.Children.map(children, (child) => {

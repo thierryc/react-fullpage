@@ -81,6 +81,35 @@ import "babel-polyfill";
 
 ![Android Phone](https://raw.githubusercontent.com/thierryc/react-fullpage/master/static/images/android-phone.jpg)
 
+
+## Dev
+
+open 2 terminal
+
+In the first terminals windows.
+
+
+```
+
+> npm i
+> npm link
+> npm start
+
+```
+
+
+In the second terminal
+
+```
+
+> cd example
+> npm i
+> npm link @ap.cx/react-fullpage
+> npm start
+
+```
+
+
 ## Thanks
 
 Special thanks to [BrowserStack](https://www.browserstack.com/users/sign_up) for sponsoring this plugin. 👍

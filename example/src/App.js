@@ -11,12 +11,17 @@ export default class App extends Component {
     }
   }
 
-  onChange() {}
+  onChange(e) {
+    console.log(e);
+  }
 
   render () {
 
     return (
-      <Fullpage onChange={this.onChange}>
+      <Fullpage
+        desktopForceStep={true}
+        onChange={this.onChange}
+        >
 
         <FullpageSection style={{
           backgroundColor: 'lime',
@@ -28,8 +33,9 @@ export default class App extends Component {
           justifyContent: 'center',
         }}>
           <div>
-            <h1 style={{fontSize: '4em'}}>React Fullpage 0.0.9</h1>
+            <h1 style={{fontSize: '4em'}}>React Fullpage 0.0.10</h1>
             <h2 style={{fontSize: '2em'}}>Create Fullscreen Scrolling Websites</h2>
+            <p>0.0.10: now you can use key <span role="img" aria-label="key up">⬆️</span> and <span role="img" aria-label="key down">⬇️</span> or key <span role="img" aria-label="key down">⬅️</span> and <span role="img" aria-label="key right">➡️</span></p>
           </div>
         </FullpageSection>
 

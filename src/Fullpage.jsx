@@ -52,8 +52,9 @@ class Fullpage extends PureComponent {
     this.driver = React.createRef();
     this.warperRef = React.createRef();
     this.fullpageRef = React.createRef();
-    this.ticking = false;
-    this.timeout = null;
+    this.scrollTicking = false;
+    this.resizeTicking = false;
+    this.historyTimeout = null;
     this.children = null;
     this.slides = null;
     this.state = {
@@ -99,7 +100,7 @@ class Fullpage extends PureComponent {
   }
 
   handleScroll() {
-    if (!this.ticking) {
+    if (!this.scrollTicking) {
       window.requestAnimationFrame(() => {
         const { transitionTiming } = this.props;
         const { currentSlide } = this.state;
@@ -109,14 +110,14 @@ class Fullpage extends PureComponent {
         );
         this.gotoSlide(newSlide, currentSlide);
         this.lastKnownScrollPosition = lastKnownScrollPosition;
-        this.ticking = false;
+        this.scrollTicking = false;
       });
     }
-    this.ticking = true;
+    this.scrollTicking = true;
   }
 
   handleResize() {
-    if (!this.ticking) {
+    if (!this.resizeTicking) {
       window.requestAnimationFrame(() => {
         this.viewportHeight = Math.max(
           document.documentElement.clientHeight,
@@ -124,10 +125,10 @@ class Fullpage extends PureComponent {
         );
         this.fullPageHeight = this.fullpageRef.current.clientHeight;
         this.driver.current.style.height = `${this.fullPageHeight}px`;
-        this.ticking = false;
+        this.resizeTicking = false;
       });
     }
-    this.ticking = true;
+    this.resizeTicking = true;
   }
 
   updateHistory(newSlide) {
@@ -202,8 +203,10 @@ class Fullpage extends PureComponent {
       if (scrollTo) {
         window.scrollTo(0, newSlide.el.offsetTop);
       }
-      clearTimeout(this.timeout);
-      this.timeout = setTimeout(() => this.updateHistory(newSlide), transitionTiming);
+
+      clearTimeout(this.historyTimeout);
+      this.historyTimeout = setTimeout(() => this.updateHistory(newSlide), transitionTiming);
+
       this.props.onChange(this.state);
     }
   }

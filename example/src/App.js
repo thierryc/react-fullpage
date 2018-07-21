@@ -15,7 +15,21 @@ export default class App extends Component {
     console.log(e);
   }
 
+  addSlide() {
+    const { extraSlide } = this.state;
+    const content = <div>
+      <h1>New content {extraSlide.length + 1}</h1>
+      <p>Lorem ipsum content.</p>
+    </div>
+    this.setState({
+      extraSlide: extraSlide.concat([{content}])
+    });
+    console.log(this.state);
+  }
+
   render () {
+
+    const { extraSlide } = this.state;
 
     return (
       <Fullpage
@@ -60,6 +74,23 @@ export default class App extends Component {
         }}>
         <h1 style={{fontSize: '4em'}}>2</h1>
         </FullpageSection>
+
+        {
+          extraSlide.map((slide, index) => (
+            <FullpageSection style={{
+              backgroundColor: 'purple',
+              color: 'white',
+              padding: '1em',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            key={`extraSlide${index}`}
+            >
+            <div>{slide.content}</div>
+            </FullpageSection>
+          ))
+        }
 
         <FullpageSection style={{
           backgroundColor: 'firebrick',

@@ -44,7 +44,7 @@ class Fullpage extends PureComponent {
     className: '',
     navigation: false,
     onChange: null,
-    keyboardShortcut: true;
+    keyboardShortcut: true,
   };
 
   constructor(props) {

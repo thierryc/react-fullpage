@@ -7,8 +7,10 @@ export default class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      backgroundColor: 'coral'
+      backgroundColor: 'coral',
+      extraSlide: []
     }
+    this.addSlide = this.addSlide.bind(this);
   }
 
   onChange(e) {
@@ -72,7 +74,10 @@ export default class App extends Component {
             backgroundColor: 'coral'
           })
         }}>
-        <h1 style={{fontSize: '4em'}}>2</h1>
+          <div>
+            <h1 style={{fontSize: '4em'}}>2</h1>
+            <button onClick={this.addSlide}>addSlide</button>
+          </div>
         </FullpageSection>
 
         {
@@ -100,7 +105,10 @@ export default class App extends Component {
           alignItems: 'center',
           justifyContent: 'center',
         }}>
-        <h1 style={{fontSize: '4em'}}>3</h1>
+          <div>
+            <h1 style={{fontSize: '4em'}}>3</h1>
+            <button onClick={this.addSlide}>addSlide</button>
+          </div>
         </FullpageSection>
 
         <FullpageSection style={{

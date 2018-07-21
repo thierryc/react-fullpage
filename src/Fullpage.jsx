@@ -72,9 +72,7 @@ class Fullpage extends PureComponent {
   }
 
   componentDidMount() {
-    this.viewportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-    this.fullPageHeight = this.fullpageRef.current.clientHeight;
-    this.driver.current.style.height = `${this.fullPageHeight}px`;
+    this.handleResize();
     this.slides = this.getSlides(this.children);
 
     this.setState({
@@ -88,6 +86,11 @@ class Fullpage extends PureComponent {
     if (typeof document !== 'undefined') {
       document.addEventListener('keydown', this.handleKeys);
     }
+  }
+
+  componentDidUpdate(prevProps) {
+    this.handleResize();
+    this.slides = this.getSlides(this.children);
   }
 
   componentWillUnmount() {
@@ -116,10 +119,10 @@ class Fullpage extends PureComponent {
       props.udid = this.uuidv4();
       if (child && child.type === Section) {
         if (child.props.onShow && typeof child.props.onShow === 'function') {
-          this.subscribeOnShow(props.udid, child);
+
         }
         if (child.props.onHide && typeof child.props.onHide === 'function') {
-          this.subscribeOnHide(props.udid, child);
+
         }
         props.ref = React.createRef();
       }
@@ -190,14 +193,6 @@ class Fullpage extends PureComponent {
     this.resizeTicking = true;
   }
 
-  subscribeOnShow(uuid, newSlide) {
-    this.onShow[uuid] = newSlide;
-  }
-
-  subscribeOnHide(uuid, newSlide) {
-    this.onHide[uuid] = newSlide;
-  }
-
   gotoFirst(event) {
     const { currentSlide } = this.state;
     event.preventDefault();
@@ -256,7 +251,7 @@ class Fullpage extends PureComponent {
         currentSlide: newSlide,
         translateY,
       });
-
+      // TODO onShow onHide
       if (previousSlide) {
         const { udid: previousSlideUdid = null } = previousSlide.slide.props;
         if (previousSlideUdid && this.onHide[previousSlideUdid]) {
@@ -266,7 +261,7 @@ class Fullpage extends PureComponent {
           }
         }
       }
-
+      // TODO onShow onHide
       const { udid: newSlideUdid = null } = newSlide.slide.props;
       if (newSlideUdid && this.onShow[newSlideUdid]) {
         const { onShow = null } = this.onShow[newSlideUdid].props;

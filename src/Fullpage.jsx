@@ -3,9 +3,9 @@
  */
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import memoize from 'memoize-one';
 import Section from './FullpageSection';
 import Navigation from './FullpageNavigation';
-import keydown from 'react-keydown';
 
 import styles from './styles.css';
 
@@ -44,7 +44,7 @@ class Fullpage extends PureComponent {
     className: '',
     navigation: false,
     onChange: null,
-    desktopForceStep: false,
+    keyboardShortcut: true;
   };
 
   constructor(props) {
@@ -68,19 +68,15 @@ class Fullpage extends PureComponent {
     this.onHide = {};
     this.handleScroll = this.handleScroll.bind(this);
     this.handleResize = this.handleResize.bind(this);
-    this.updateHistory = this.updateHistory.bind(this);
+    this.handleKeys = this.handleKeys.bind(this);
   }
 
   componentDidMount() {
     this.viewportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
     this.fullPageHeight = this.fullpageRef.current.clientHeight;
     this.driver.current.style.height = `${this.fullPageHeight}px`;
-    // const children = Array.from(this.fullpageRef.current.children)
-    // this.slides = children.filter(child => child.hasAttribute('isslide'))
-    this.slides = this.children.filter(child => child.type === Section).map((slide, index) => {
-      const el = slide.ref.current.ref.current;
-      return { slide, el, index };
-    });
+    this.slides = this.getSlides(this.children);
+
     this.setState({
       currentSlide: this.slides[0],
     });
@@ -88,6 +84,9 @@ class Fullpage extends PureComponent {
     if (typeof window !== 'undefined') {
       window.addEventListener('scroll', this.handleScroll);
       window.addEventListener('resize', this.handleResize);
+    }
+    if (typeof document !== 'undefined') {
+      document.addEventListener('keydown', this.handleKeys);
     }
   }
 
@@ -97,17 +96,77 @@ class Fullpage extends PureComponent {
       window.removeEventListener('scroll', this.handleScroll);
       window.removeEventListener('resize', this.handleResize);
     }
+    if (typeof document !== 'undefined') {
+      document.removeEventListener('keydown', this.handleKeys);
+    }
+  }
+
+  getSlides = memoize(
+    children => children.filter(
+      child => (child.type && child.type === Section),
+    ).map((slide, index) => {
+      const el = slide.ref.current.ref.current;
+      return { slide, el, index };
+    }),
+  );
+
+  getChildren = memoize(
+    children => React.Children.map(children, (child) => {
+      const props = {};
+      props.udid = this.uuidv4();
+      if (child && child.type === Section) {
+        if (child.props.onShow && typeof child.props.onShow === 'function') {
+          this.subscribeOnShow(props.udid, child);
+        }
+        if (child.props.onHide && typeof child.props.onHide === 'function') {
+          this.subscribeOnHide(props.udid, child);
+        }
+        props.ref = React.createRef();
+      }
+      return React.cloneElement(child, props);
+    }),
+  );
+
+  handleKeys(event) {
+    const { keyboardShortcut } = this.props;
+    if (!keyboardShortcut) {
+      return true;
+    }
+
+    if (
+      event.keyCode === 33 // pageUp:    33,
+      || event.keyCode === 37 // left:      37,
+      || event.keyCode === 38 // up:        38,
+    ) {
+      return (event.shiftKey) ? this.gotoFirst(event) : this.gotoPrevious(event);
+    }
+    if (
+      event.keyCode === 34 // pageDown:  34,
+      || event.keyCode === 39 // right:     39,
+      || event.keyCode === 40 // down:      40,
+    ) {
+      return (event.shiftKey) ? this.gotoLast(event) : this.gotoNext(event);
+    }
+    if (
+      event.keyCode === 35 // end:       35,
+    ) {
+      return this.gotoLast(event);
+    }
+    if (
+      event.keyCode === 36 // home:      36,
+    ) {
+      return this.gotoFirst(event);
+    }
+    return true;
   }
 
   handleScroll() {
     if (!this.scrollTicking) {
       window.requestAnimationFrame(() => {
-        const { transitionTiming } = this.props;
         const { currentSlide } = this.state;
         const lastKnownScrollPosition = window.pageYOffset || 0;
         const newSlide = this.slides.find(slide => (
-          lastKnownScrollPosition < slide.el.offsetTop + (slide.el.offsetHeight * 0.5))
-        );
+          lastKnownScrollPosition < slide.el.offsetTop + (slide.el.offsetHeight * 0.5)));
         this.gotoSlide(newSlide, currentSlide);
         this.lastKnownScrollPosition = lastKnownScrollPosition;
         this.scrollTicking = false;
@@ -131,10 +190,6 @@ class Fullpage extends PureComponent {
     this.resizeTicking = true;
   }
 
-  updateHistory(newSlide) {
-    console.log(newSlide);
-  }
-
   subscribeOnShow(uuid, newSlide) {
     this.onShow[uuid] = newSlide;
   }
@@ -143,30 +198,50 @@ class Fullpage extends PureComponent {
     this.onHide[uuid] = newSlide;
   }
 
-  @keydown( ['up', 'left'] )
-  gotoPrevious(event){
+  gotoFirst(event) {
     const { currentSlide } = this.state;
     event.preventDefault();
     this.gotoSlide(
-      this.slides[ Math.max(0, currentSlide.index - 1) ],
+      this.slides[0],
       currentSlide,
-      true
+      true,
     );
   }
 
-  @keydown( ['down', 'right'] )
-  gotoNext(event){
+  gotoLast(event) {
     const { currentSlide } = this.state;
     event.preventDefault();
     this.gotoSlide(
-      this.slides[ Math.min(this.slides.length - 1, currentSlide.index + 1) ],
+      this.slides[this.slides.length - 1],
       currentSlide,
-      true
+      true,
+    );
+  }
+
+  // @keydown( ['up', 'left'] )
+  gotoPrevious(event) {
+    const { currentSlide } = this.state;
+    event.preventDefault();
+    this.gotoSlide(
+      this.slides[Math.max(0, currentSlide.index - 1)],
+      currentSlide,
+      true,
+    );
+  }
+
+  // @keydown( ['down', 'right'] )
+  gotoNext(event) {
+    const { currentSlide } = this.state;
+    event.preventDefault();
+    this.gotoSlide(
+      this.slides[Math.min(this.slides.length - 1, currentSlide.index + 1)],
+      currentSlide,
+      true,
     );
   }
 
   gotoSlide(newSlide, currentSlide, scrollTo = false) {
-    const { transitionTiming } = this.props;
+    const { transitionTiming, onChange } = this.props;
 
     if (newSlide && currentSlide !== newSlide) {
       // max scroll (this.fullPageHeight - this.viewportHeight)
@@ -204,10 +279,7 @@ class Fullpage extends PureComponent {
         window.scrollTo(0, newSlide.el.offsetTop);
       }
 
-      clearTimeout(this.historyTimeout);
-      this.historyTimeout = setTimeout(() => this.updateHistory(newSlide), transitionTiming);
-
-      this.props.onChange(this.state);
+      onChange(this.state);
     }
   }
 
@@ -229,24 +301,9 @@ class Fullpage extends PureComponent {
       warperStyle,
       className,
       transitionTiming,
-      onChange,
-      desktopForceStep,
     } = this.props;
 
-    this.children = React.Children.map(children, (child) => {
-      const props = {};
-      props.udid = this.uuidv4();
-      if (child.type === Section) {
-        if (child.props.onShow && typeof child.props.onShow === 'function') {
-          this.subscribeOnShow(props.udid, child);
-        }
-        if (child.props.onHide && typeof child.props.onHide === 'function') {
-          this.subscribeOnHide(props.udid, child);
-        }
-        props.ref = React.createRef();
-      }
-      return React.cloneElement(child, props);
-    });
+    this.children = this.getChildren(children);
 
     const { translateY, previousSlide } = this.state;
 

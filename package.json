@@ -19,8 +19,7 @@
     "deploy": "gh-pages -d example/build"
   },
   "dependencies": {
-    "react-keydown": "^1.9.7",
-    "save-dev": "^2.0.0"
+    "memoize-one": "^4.0.0"
   },
   "peerDependencies": {
     "prop-types": "^15.5.4",
@@ -51,7 +50,7 @@
     "postcss-preset-env": "^5.2.2",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "react-scripts": "^1.1.1",
+    "react-scripts": "^1.1.4",
     "rollup": "^0.62.0",
     "rollup-plugin-babel": "^3.0.3",
     "rollup-plugin-commonjs": "^9.1.3",

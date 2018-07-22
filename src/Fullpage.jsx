@@ -265,7 +265,7 @@ class Fullpage extends PureComponent {
       onChange(this.state);
     }
   }
-  
+
   render() {
     const {
       children,

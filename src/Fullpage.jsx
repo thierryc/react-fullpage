@@ -104,29 +104,22 @@ class Fullpage extends PureComponent {
     }
   }
 
+  getChildren = memoize(
+    children => React.Children.map(children, (child) => {
+      const props = {};
+      if (child && child.type === Section) {
+        props.ref = React.createRef();
+      }
+      return React.cloneElement(child, props);
+    }),
+  );
+
   getSlides = memoize(
     children => children.filter(
       child => (child.type && child.type === Section),
     ).map((slide, index) => {
       const el = slide.ref.current.ref.current;
       return { slide, el, index };
-    }),
-  );
-
-  getChildren = memoize(
-    children => React.Children.map(children, (child) => {
-      const props = {};
-      props.udid = this.uuidv4();
-      if (child && child.type === Section) {
-        if (child.props.onShow && typeof child.props.onShow === 'function') {
-
-        }
-        if (child.props.onHide && typeof child.props.onHide === 'function') {
-
-        }
-        props.ref = React.createRef();
-      }
-      return React.cloneElement(child, props);
     }),
   );
 
@@ -238,8 +231,8 @@ class Fullpage extends PureComponent {
   gotoSlide(newSlide, currentSlide, scrollTo = false) {
     const { transitionTiming, onChange } = this.props;
 
-    if (newSlide && currentSlide !== newSlide) {
-      // max scroll (this.fullPageHeight - this.viewportHeight)
+    // TODO: try an other coapraison ... exclude prop
+    if (currentSlide.index !== newSlide.index) {
       const translateY = Math.max(
         (this.fullPageHeight - this.viewportHeight) * -1,
         newSlide.el.offsetTop * -1,
@@ -251,23 +244,18 @@ class Fullpage extends PureComponent {
         currentSlide: newSlide,
         translateY,
       });
+
       // TODO onShow onHide
       if (previousSlide) {
-        const { udid: previousSlideUdid = null } = previousSlide.slide.props;
-        if (previousSlideUdid && this.onHide[previousSlideUdid]) {
-          const { onHide = null } = this.onHide[previousSlideUdid].props;
-          if (onHide) {
-            setTimeout(() => onHide(translateY), transitionTiming);
-          }
+        const { onHide: previousSlideOnHide = null } = previousSlide.slide.props;
+        if (previousSlideOnHide && typeof previousSlideOnHide === 'function') {
+          setTimeout(() => previousSlideOnHide(translateY), transitionTiming);
         }
       }
-      // TODO onShow onHide
-      const { udid: newSlideUdid = null } = newSlide.slide.props;
-      if (newSlideUdid && this.onShow[newSlideUdid]) {
-        const { onShow = null } = this.onShow[newSlideUdid].props;
-        if (onShow) {
-          onShow(translateY);
-        }
+
+      const { onShow: newSlideOnShow = null } = newSlide.slide.props;
+      if (newSlideOnShow && typeof newSlideOnShow === 'function') {
+        newSlideOnShow(translateY);
       }
 
       if (scrollTo) {
@@ -277,17 +265,7 @@ class Fullpage extends PureComponent {
       onChange(this.state);
     }
   }
-
-  /* eslint-disable */
-  uuidv4() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-      const r = Math.random() * 16 | 0,
-        v = (c === 'x') ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
-  }
-  /* eslint-enable */
-
+  
   render() {
     const {
       children,

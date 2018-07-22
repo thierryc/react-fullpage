@@ -26,6 +26,7 @@ class Fullpage extends PureComponent {
     className: PropTypes.string,
     navigation: PropTypes.bool,
     onChange: PropTypes.func,
+    keyboardShortcut: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -88,7 +89,7 @@ class Fullpage extends PureComponent {
     }
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate() { // prevProps
     this.handleResize();
     this.slides = this.getSlides(this.children);
   }

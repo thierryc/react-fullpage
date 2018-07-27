@@ -48,8 +48,8 @@ class Fullpage extends PureComponent {
     keyboardShortcut: true,
   };
 
-  constructor(props) {
-    super(props);
+  constructor(props, context) {
+    super(props, context);
     this.driver = React.createRef();
     this.warperRef = React.createRef();
     this.fullpageRef = React.createRef();
@@ -232,8 +232,8 @@ class Fullpage extends PureComponent {
   gotoSlide(newSlide, currentSlide, scrollTo = false) {
     const { transitionTiming, onChange } = this.props;
 
-    // TODO: try an other coapraison ... exclude prop
-    if (currentSlide.index !== newSlide.index) {
+    // TODO: try an other coapraison ... key better than index exclude prop
+    if (currentSlide.slide.key !== newSlide.slide.key) {
       const translateY = Math.max(
         (this.fullPageHeight - this.viewportHeight) * -1,
         newSlide.el.offsetTop * -1,

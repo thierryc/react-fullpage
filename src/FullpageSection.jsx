@@ -26,8 +26,8 @@ class FullpageSection extends PureComponent {
     onHide: null,
   };
 
-  constructor(props) {
-    super(props);
+  constructor(props, context) {
+    super(props, context);
     this.ref = React.createRef();
     this.state = {};
     this.sectionDidShow = this.sectionDidShow.bind(this);

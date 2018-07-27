@@ -5,7 +5,7 @@
   "private": true,
   "license": "MIT",
   "dependencies": {
-    "@ap.cx/react-fullpage": "^0.0.12",
+    "@ap.cx/react-fullpage": "^0.0.13",
     "babel-polyfill": "^6.26.0",
     "prop-types": "^15.6.1",
     "react": "^16.2.0",
@@ -16,6 +16,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "link": "npm link @ap.cx/react-fullpage"
   }
 }

@@ -1,7 +1,7 @@
 /**
  * @class Fullpage
  */
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import memoize from 'memoize-one';
 import Section from './FullpageSection';
@@ -282,7 +282,7 @@ class Fullpage extends PureComponent {
     const { translateY, previousSlide } = this.state;
 
     return (
-      <div>
+      <Fragment>
         <div style={{ position: 'relative' }} ref={this.driver} />
         <div className={styles.fullpageWarper} style={{ ...warperStyle }} ref={this.warperRef}>
           <div
@@ -298,7 +298,7 @@ class Fullpage extends PureComponent {
             { navigation && <Navigation data={children} previousSlide={previousSlide} /> }
           </div>
         </div>
-      </div>
+      </Fragment>
     );
   }
 }

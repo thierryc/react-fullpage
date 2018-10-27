@@ -1,28 +1,28 @@
 /**
- * @class FullpageNavigation
+ * @class FullpageCount
  */
 import React, { PureComponent } from 'react';
-
 import FullpageContext from './FullpageContext';
 
-class FullpageNavigation extends PureComponent {
-  
+class FullpageCount extends PureComponent {
+  static contextType = FullpageContext;
+
   constructor(props, context) {
     super(props, context);
   }
 
   render() {
+    const {
+      style
+    } = this.props;
     return (
       <FullpageContext.Consumer>
-        { value => (
-          <li>
-            1,2,3
-          </li>
-          )
+        {
+          ctx => <span style={style}>{ctx.count}</span>
         }
       </FullpageContext.Consumer>
     );
   }
 }
 
-export default FullpageNavigation;
+export default FullpageCount;

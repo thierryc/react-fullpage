@@ -3,8 +3,14 @@
  */
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import FullpageNumber from './FullpageNumber';
+import FullpageContext from './FullpageContext';
+
+const FullpageSectionContext = React.createContext();
 
 class FullpageSection extends PureComponent {
+  static contextType = FullpageContext;
+
   static propTypes = {
     children: PropTypes.node.isRequired,
     height: PropTypes.string,
@@ -26,22 +32,31 @@ class FullpageSection extends PureComponent {
     onHide: null,
   };
 
+  static Number = ({style = {}}) => (
+    <FullpageSectionContext.Consumer>
+      { ctx => <span style={style}>{ ctx.index }</span> }
+    </FullpageSectionContext.Consumer>
+  );
+
   constructor(props, context) {
     super(props, context);
-    this.ref = React.createRef();
-    this.state = {};
-    this.sectionDidShow = this.sectionDidShow.bind(this);
-    this.sectionDidHide = this.sectionDidHide.bind(this);
+    this.sectionRef = React.createRef();
   }
 
-  sectionDidShow() {
-    const { onShow } = this.props;
-    onShow();
+  componentDidMount() {
+    const {subscribe, count} = this.context;
+    this.el = this.sectionRef;
+    subscribe(this);
   }
 
-  sectionDidHide() {
-    const { onHide } = this.props;
-    onHide();
+  componentDidUpdate() {
+    const {update} = this.context;
+    update(this);
+  }
+
+  componentWillUnmount() {
+    const {unsubscribe} = this.context;
+    const slide = unsubscribe(this);
   }
 
   render() {
@@ -51,11 +66,14 @@ class FullpageSection extends PureComponent {
       style,
       className,
     } = this.props;
-
     return (
-      <section className={className} style={{ height, ...style }} ref={this.ref}>
-        {children}
-      </section>
+      <FullpageSectionContext.Provider value={{
+          index: this.index,
+        }}>
+        <section className={className} style={{ height, ...style }} ref={this.sectionRef}>
+          { children }
+        </section>
+      </FullpageSectionContext.Provider>
     );
   }
 }

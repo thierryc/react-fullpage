@@ -5,12 +5,12 @@
   "private": true,
   "license": "MIT",
   "dependencies": {
-    "@ap.cx/react-fullpage": "^0.0.13",
+    "@ap.cx/react-fullpage": "^0.1.2-alpha",
     "babel-polyfill": "^6.26.0",
-    "prop-types": "^15.6.1",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
-    "react-scripts": "^1.1.1"
+    "prop-types": "^15.6.2",
+    "react": "^16.6.0",
+    "react-dom": "^16.6.0",
+    "react-scripts": "^1.1.5"
   },
   "scripts": {
     "start": "react-scripts start",

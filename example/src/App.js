@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Fullpage, { FullpageSection } from '@ap.cx/react-fullpage'
+import Fullpage, { FullpageSection, FullpageCount } from '@ap.cx/react-fullpage'
 import "babel-polyfill";
 
 export default class App extends Component {
@@ -11,6 +11,7 @@ export default class App extends Component {
       extraSlide: []
     }
     this.addSlide = this.addSlide.bind(this);
+    this.removeSlide = this.removeSlide.bind(this);
   }
 
   onChange(e) {
@@ -25,6 +26,14 @@ export default class App extends Component {
     </div>
     this.setState({
       extraSlide: extraSlide.concat([{content}])
+    });
+    console.log(this.state);
+  }
+
+  removeSlide() {
+    const { extraSlide } = this.state;
+    this.setState({
+      extraSlide: extraSlide.slice(0, -1)
     });
     console.log(this.state);
   }
@@ -49,9 +58,38 @@ export default class App extends Component {
           justifyContent: 'center',
         }}>
           <div>
-            <h1 style={{fontSize: '4em'}}>React Fullpage 0.0.12</h1>
+            <h1 style={{fontSize: '4em'}}>React Fullpage</h1>
             <h2 style={{fontSize: '2em'}}>Create Fullscreen Scrolling Websites</h2>
-            <p>0.0.10: now you can use key <span role="img" aria-label="key up">⬆️</span> and <span role="img" aria-label="key down">⬇️</span> or key <span role="img" aria-label="key down">⬅️</span> and <span role="img" aria-label="key right">➡️</span></p>
+            <p>Version 0.1.2-alpha</p>
+          </div>
+        </FullpageSection>
+
+        <FullpageSection style={{
+          backgroundColor: 'lime',
+          color: 'darkGreen',
+          height: '100vh',
+          padding: '1em',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+          <div>
+            <h1 style={{fontSize: '4em'}}>Image</h1>
+          </div>
+        </FullpageSection>
+
+        <FullpageSection style={{
+          backgroundColor: 'lime',
+          color: 'darkGreen',
+          height: '80vh',
+          padding: '1em',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+          <div>
+            <h1 style={{fontSize: '4em'}}>Use key</h1>
+            <p>You can use key <span role="img" aria-label="key up">⬆️</span> and <span role="img" aria-label="key down">⬇️</span> or key <span role="img" aria-label="key down">⬅️</span> and <span role="img" aria-label="key right">➡️</span></p>
           </div>
         </FullpageSection>
 
@@ -77,6 +115,7 @@ export default class App extends Component {
           <div>
             <h1 style={{fontSize: '4em'}}>2</h1>
             <button onClick={this.addSlide}>addSlide</button>
+            <p style={{ fontSize: '2em'}}>Page <FullpageSection.Number style={{ fontSize: '3em'}}/> / <FullpageCount style={{ fontSize: '1em'}}/></p>
           </div>
         </FullpageSection>
 
@@ -108,6 +147,7 @@ export default class App extends Component {
           <div>
             <h1 style={{fontSize: '4em'}}>3</h1>
             <button onClick={this.addSlide}>addSlide</button>
+            <button onClick={this.removeSlide}>removeSlide</button>
           </div>
         </FullpageSection>
 

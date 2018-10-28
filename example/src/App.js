@@ -113,7 +113,7 @@ export default class App extends Component {
           })
         }}>
           <div>
-            <h1 style={{fontSize: '4em'}}>2</h1>
+            <h1 style={{fontSize: '4em'}}><FullpageSection.Number/></h1>
             <button onClick={this.addSlide}>addSlide</button>
             <p style={{ fontSize: '2em'}}>Page <FullpageSection.Number style={{ fontSize: '3em'}}/> / <FullpageCount style={{ fontSize: '1em'}}/></p>
           </div>
@@ -145,7 +145,7 @@ export default class App extends Component {
           justifyContent: 'center',
         }}>
           <div>
-            <h1 style={{fontSize: '4em'}}>3</h1>
+            <h1 style={{fontSize: '4em'}}><FullpageSection.Number/></h1>
             <button onClick={this.addSlide}>addSlide</button>
             <button onClick={this.removeSlide}>removeSlide</button>
           </div>
@@ -160,7 +160,7 @@ export default class App extends Component {
           alignItems: 'center',
           justifyContent: 'center',
         }}>
-        <h1 style={{fontSize: '2em'}}>4 Small</h1>
+        <h1 style={{fontSize: '2em'}}><FullpageSection.Number/> Small</h1>
         </FullpageSection>
 
       </Fullpage>

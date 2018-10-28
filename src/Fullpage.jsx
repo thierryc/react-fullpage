@@ -3,11 +3,7 @@
  */
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import memoize from 'memoize-one';
-import Section from './FullpageSection';
-import Navigation from './FullpageNavigation';
 import FullpageContext from './FullpageContext';
-import styles from './styles.css';
 
 class Fullpage extends PureComponent {
   static contextType = FullpageContext;
@@ -26,7 +22,6 @@ class Fullpage extends PureComponent {
       PropTypes.bool,
     ])),
     className: PropTypes.string,
-    navigation: PropTypes.bool,
     onChange: PropTypes.func,
     keyboardShortcut: PropTypes.bool,
   };
@@ -45,7 +40,6 @@ class Fullpage extends PureComponent {
       right: 0,
     },
     className: '',
-    navigation: false,
     onChange: null,
     keyboardShortcut: true,
   };
@@ -67,7 +61,8 @@ class Fullpage extends PureComponent {
     this.subscribe = this.subscribe.bind(this);
     this.unsubscribe = this.unsubscribe.bind(this);
     this.update = this.update.bind(this);
-
+    this.getIndex = this.getIndex.bind(this);
+    // handle
     this.handleScroll = this.handleScroll.bind(this);
     this.handleResize = this.handleResize.bind(this);
     this.handleKeys = this.handleKeys.bind(this);
@@ -78,7 +73,7 @@ class Fullpage extends PureComponent {
   }
 
   componentDidMount() {
-    this.update();
+    this.handleResize();
     this.setState({ slide: this.slides[0] });
     if (typeof window !== 'undefined') {
       window.addEventListener('scroll', this.handleScroll);
@@ -90,7 +85,7 @@ class Fullpage extends PureComponent {
   }
 
   componentDidUpdate() {
-    this.update();
+    this.handleResize();
   }
 
   componentWillUnmount() {
@@ -104,43 +99,47 @@ class Fullpage extends PureComponent {
     }
   }
 
-  subscribe(slide){
+  getIndex(slide) {
+    return this.slides.indexOf(slide);
+  }
+
+  subscribe(slide) {
+    // add new slide (push)
     const newSlides = [...this.slides, slide];
-    this.slides = newSlides.sort( (a,b) => {
+    // sort slide for top to bottom
+    this.slides = newSlides.sort((a, b) => {
       const aTop = a.el.current.offsetTop;
       const bTop = b.el.current.offsetTop;
       return aTop - bTop;
     });
     this.setState({ count: this.slides.length });
-    this.update(slide);
+    this.ticking = false;
+    this.handleResize();
     return slide;
   }
 
-  unsubscribe(slide){
+  unsubscribe(slide) {
     this.slides = this.slides.filter(s => s.el !== slide.el);
     this.setState({ count: this.slides.length });
-    this.update(slide);
+    this.ticking = false;
+    this.handleResize();
     return slide;
   }
 
-  handleKeys(event) {
-
-  }
-
-  handleScroll(e) {
+  handleScroll() {
     if (!this.ticking) {
       window.requestAnimationFrame(() => {
-        if (this.state.resetScroll) {
-          console.log(this.state.translateY * -1);
-          window.scrollTo(0, this.state.translateY * -1);
+        const { resetScroll, translateY } = this.state;
+        if (resetScroll) {
+          window.scrollTo(0, translateY * -1);
           this.setState({
             resetScroll: false,
           });
         }
         const lastKnownScrollPosition = window.pageYOffset || 0;
-        const newSlide = this.slides.find(slide => {
+        const newSlide = this.slides.find((slide) => {
           const el = slide.el.current;
-          return lastKnownScrollPosition < el.offsetTop + (el.offsetHeight * 0.5)
+          return lastKnownScrollPosition < el.offsetTop + (el.offsetHeight * 0.5);
         });
         this.lastKnownScrollPosition = lastKnownScrollPosition;
         this.goto(newSlide);
@@ -151,7 +150,19 @@ class Fullpage extends PureComponent {
   }
 
   handleResize() {
-    this.update();
+    if (!this.ticking) {
+      window.requestAnimationFrame(() => {
+        // update count
+        this.viewportHeight = Math.max(
+          document.documentElement.clientHeight,
+          window.innerHeight || 0,
+        );
+        this.fullPageHeight = this.fullpageRef.current.clientHeight;
+        this.driverRef.current.style.height = `${this.fullPageHeight}px`;
+        this.ticking = false;
+      });
+    }
+    this.ticking = true;
   }
 
   handleKeys(event) {
@@ -192,73 +203,59 @@ class Fullpage extends PureComponent {
     return true;
   }
 
-  update(slide){
-    this.slides = this.slides.map((slide, index) => {
-      slide.index = index;
-      return slide;
-    });
-    if (!this.ticking) {
-      window.requestAnimationFrame(() => {
-        this.viewportHeight = Math.max(
-          document.documentElement.clientHeight,
-          window.innerHeight || 0,
-        );
-        this.fullPageHeight = this.fullpageRef.current.clientHeight;
-        this.driverRef.current.style.height = `${this.fullPageHeight}px`;
-        this.ticking = false;
-      });
-    }
-    this.ticking = true;
-    return true;
+  update() {
+
   }
 
-  goto(slide, resetScroll = false) {
+  goto(newSlide, resetScroll = false) {
+    const { slide } = this.state;
     const { transitionTiming, onChange } = this.props;
-    if (this.state.slide !== slide) {
-
+    if (slide !== newSlide) {
       const translateY = Math.max(
         (this.fullPageHeight - this.viewportHeight) * -1,
-        slide.el.current.offsetTop * -1,
+        newSlide.el.current.offsetTop * -1,
       );
 
-      const { onHide: previousSlideOnHide = null } = this.state.slide.props;
-      if (previousSlideOnHide && typeof previousSlideOnHide === 'function') {
-        setTimeout(() => previousSlideOnHide(translateY), transitionTiming);
+      const { onHide } = slide.props;
+      if (onHide && typeof onHide === 'function') {
+        setTimeout(() => onHide(translateY), transitionTiming);
       }
-
-      console.log(resetScroll);
 
       this.setState({
-        slide: slide,
-        number: slide.index,
+        slide: newSlide,
+        number: this.getIndex(newSlide),
         translateY,
-        resetScroll
+        resetScroll,
       });
 
-      const { onShow: slideOnShow = null } = slide.props;
-      if (slideOnShow && typeof slideOnShow === 'function') {
-        slideOnShow(translateY);
+      const { onShow } = newSlide.props;
+      if (onShow && typeof onShow === 'function') {
+        onShow(translateY);
       }
-      //onChange(this.state);
+      // call back function
+      onChange(this.state);
     }
-    return slide;
+    return newSlide;
   }
 
-  back(){
-    const index = Math.max(0, this.state.slide.index - 1);
+  back() {
+    const { number } = this.state;
+    const index = Math.max(0, number - 1);
     this.goto(this.slides[index], true);
   }
 
-  next(){
-    const index = Math.min(this.slides.length - 1, this.state.slide.index + 1);
+  next() {
+    const { length } = this.slides;
+    const { number } = this.state;
+    const index = Math.min(length - 1, number + 1);
     this.goto(this.slides[index], true);
   }
 
-  first(){
+  first() {
     this.goto(this.slides[0], true);
   }
 
-  last(){
+  last() {
     this.goto(this.slides[this.slides.length - 1], true);
   }
 
@@ -271,19 +268,21 @@ class Fullpage extends PureComponent {
       transitionTiming,
     } = this.props;
 
-    const { translateY } = this.state;
+    const { translateY, number, count } = this.state;
 
     return (
       <FullpageContext.Provider value={{
-        number: this.state.number,
-        count: this.state.count,
+        number,
+        count,
         subscribe: this.subscribe,
         unsubscribe: this.unsubscribe,
         update: this.update,
         goto: this.goto,
         back: this.back,
         next: this.next,
-      }}>
+        getIndex: this.getIndex,
+      }}
+      >
         <div
           style={{ position: 'relative' }}
           ref={this.driverRef}
@@ -292,8 +291,9 @@ class Fullpage extends PureComponent {
         <div
           style={warperStyle}
           ref={this.warperRef}
-          >
+        >
           <div
+            className={className}
             style={{
               transition: `transform ${transitionTiming}ms cubic-bezier(0.645, 0.045, 0.355, 1.000)`,
               ...style,

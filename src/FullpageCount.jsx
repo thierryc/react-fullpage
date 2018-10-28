@@ -2,18 +2,27 @@
  * @class FullpageCount
  */
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import FullpageContext from './FullpageContext';
 
 class FullpageCount extends PureComponent {
   static contextType = FullpageContext;
 
-  constructor(props, context) {
-    super(props, context);
-  }
+  static propTypes = {
+    style: PropTypes.objectOf(PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string,
+      PropTypes.bool,
+    ])),
+  };
+
+  static defaultProps = {
+    style: {},
+  };
 
   render() {
     const {
-      style
+      style,
     } = this.props;
     return (
       <FullpageContext.Consumer>

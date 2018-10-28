@@ -11,11 +11,6 @@ class Fullpage extends PureComponent {
   static propTypes = {
     children: PropTypes.node.isRequired,
     transitionTiming: PropTypes.number,
-    warperStyle: PropTypes.objectOf(PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string,
-      PropTypes.bool,
-    ])),
     style: PropTypes.objectOf(PropTypes.oneOfType([
       PropTypes.number,
       PropTypes.string,
@@ -29,11 +24,6 @@ class Fullpage extends PureComponent {
   static defaultProps = {
     transitionTiming: 700,
     style: {
-      position: 'absolute',
-      left: 0,
-      right: 0,
-    },
-    warperStyle: {
       position: 'fixed',
       top: 0,
       left: 0,
@@ -50,11 +40,13 @@ class Fullpage extends PureComponent {
     this.state = {
       slide: null,
       translateY: 0,
+      pageYOffset: 0,
+      offsetHeight: 0,
       count: 0,
       number: 0,
+      resetScroll: false,
     };
     this.ticking = false;
-    this.lastKnownScrollPosition = 0;
     this.fullPageHeight = 0;
     this.viewportHeight = 0;
     // binds
@@ -104,6 +96,7 @@ class Fullpage extends PureComponent {
   }
 
   subscribe(slide) {
+    console.log(slide);
     // add new slide (push)
     const newSlides = [...this.slides, slide];
     // sort slide for top to bottom
@@ -123,6 +116,7 @@ class Fullpage extends PureComponent {
     this.setState({ count: this.slides.length });
     this.ticking = false;
     this.handleResize();
+    this.handleScroll();
     return slide;
   }
 
@@ -130,18 +124,24 @@ class Fullpage extends PureComponent {
     if (!this.ticking) {
       window.requestAnimationFrame(() => {
         const { resetScroll, translateY } = this.state;
+        // resetScroll
         if (resetScroll) {
           window.scrollTo(0, translateY * -1);
           this.setState({
             resetScroll: false,
           });
         }
-        const lastKnownScrollPosition = window.pageYOffset || 0;
+
+        const pageYOffset = window.pageYOffset || 0;
         const newSlide = this.slides.find((slide) => {
           const el = slide.el.current;
-          return lastKnownScrollPosition < el.offsetTop + (el.offsetHeight * 0.5);
+          return pageYOffset < el.offsetTop + (el.offsetHeight * 0.5);
         });
-        this.lastKnownScrollPosition = lastKnownScrollPosition;
+
+        this.setState({
+          pageYOffset
+        });
+
         this.goto(newSlide);
         this.ticking = false;
       });
@@ -225,6 +225,7 @@ class Fullpage extends PureComponent {
         slide: newSlide,
         number: this.getIndex(newSlide),
         translateY,
+        offsetHeight: newSlide.el.current.offsetHeight,
         resetScroll,
       });
 
@@ -233,7 +234,7 @@ class Fullpage extends PureComponent {
         onShow(translateY);
       }
       // call back function
-      onChange(this.state);
+      // onChange(this.state);
     }
     return newSlide;
   }
@@ -268,10 +269,13 @@ class Fullpage extends PureComponent {
       transitionTiming,
     } = this.props;
 
-    const { translateY, number, count } = this.state;
+    const { translateY, pageYOffset, offsetHeight, number, count } = this.state;
 
     return (
       <FullpageContext.Provider value={{
+        translateY,
+        pageYOffset,
+        offsetHeight,
         number,
         count,
         subscribe: this.subscribe,
@@ -281,30 +285,19 @@ class Fullpage extends PureComponent {
         back: this.back,
         next: this.next,
         getIndex: this.getIndex,
+        transitionTiming,
+        className,
+        style,
+        warperRef: this.warperRef,
+        fullpageRef: this.fullpageRef,
       }}
       >
         <div
+          name='Driver'
           style={{ position: 'relative' }}
           ref={this.driverRef}
         />
-
-        <div
-          style={warperStyle}
-          ref={this.warperRef}
-        >
-          <div
-            className={className}
-            style={{
-              transition: `transform ${transitionTiming}ms cubic-bezier(0.645, 0.045, 0.355, 1.000)`,
-              ...style,
-              transform: `translate3D(0, ${(translateY)}px, 0)`,
-            }}
-            ref={this.fullpageRef}
-          >
-            { children }
-          </div>
-        </div>
-
+        { children }
       </FullpageContext.Provider>
     );
   }

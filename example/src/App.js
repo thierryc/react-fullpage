@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Fullpage, { FullpageSection, FullpageCount } from '@ap.cx/react-fullpage'
+import Fullpage, { FullPageSections, FullpageSection, FullpageCount, FullpageNavigation } from '@ap.cx/react-fullpage'
 import "babel-polyfill";
 
 export default class App extends Component {
@@ -39,131 +39,141 @@ export default class App extends Component {
   }
 
   render () {
-
     const { extraSlide } = this.state;
-
     return (
-      <Fullpage
-        desktopForceStep={true}
-        onChange={this.onChange}
-        >
+        <Fullpage
+          desktopForceStep={true}
+          onChange={this.onChange}
+          >
 
-        <FullpageSection style={{
-          backgroundColor: 'lime',
-          color: 'darkGreen',
-          height: '80vh',
-          padding: '1em',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-          <div>
-            <h1 style={{fontSize: '4em'}}>React Fullpage</h1>
-            <h2 style={{fontSize: '2em'}}>Create Fullscreen Scrolling Websites</h2>
-            <p>Version 0.1.2-alpha</p>
-          </div>
-        </FullpageSection>
+          <FullpageNavigation
+            style={{
+              backgroundColor: 'orange',
+              position: 'fixed',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          />
 
-        <FullpageSection style={{
-          backgroundColor: 'lime',
-          color: 'darkGreen',
-          height: '100vh',
-          padding: '1em',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-          <div>
-            <h1 style={{fontSize: '4em'}}>Image</h1>
-          </div>
-        </FullpageSection>
-
-        <FullpageSection style={{
-          backgroundColor: 'lime',
-          color: 'darkGreen',
-          height: '80vh',
-          padding: '1em',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-          <div>
-            <h1 style={{fontSize: '4em'}}>Use key</h1>
-            <p>You can use key <span role="img" aria-label="key up">⬆️</span> and <span role="img" aria-label="key down">⬇️</span> or key <span role="img" aria-label="key down">⬅️</span> and <span role="img" aria-label="key right">➡️</span></p>
-          </div>
-        </FullpageSection>
-
-        <FullpageSection style={{
-          backgroundColor: this.state.backgroundColor,
-          color: 'white',
-          padding: '1em',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'background-color 1000ms linear',
-        }}
-        onShow={() => {
-          this.setState({
-            backgroundColor: 'teal'
-          })
-        }}
-        onHide={() => {
-          this.setState({
-            backgroundColor: 'coral'
-          })
-        }}>
-          <div>
-            <h1 style={{fontSize: '4em'}}><FullpageSection.Number/></h1>
-            <button onClick={this.addSlide}>addSlide</button>
-            <p style={{ fontSize: '2em'}}>Page <FullpageSection.Number style={{ fontSize: '3em'}}/> / <FullpageCount style={{ fontSize: '1em'}}/></p>
-          </div>
-        </FullpageSection>
-
-        {
-          extraSlide.map((slide, index) => (
+          <FullPageSections>
             <FullpageSection style={{
-              backgroundColor: 'purple',
+              backgroundColor: 'lime',
+              color: 'darkGreen',
+              height: '80vh',
+              padding: '1em',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <div>
+                <h1 style={{fontSize: '4em'}}>React Fullpage</h1>
+                <h2 style={{fontSize: '2em'}}>Create Fullscreen Scrolling Websites</h2>
+                <p>Version 0.1.2-alpha</p>
+              </div>
+            </FullpageSection>
+
+            <FullpageSection style={{
+              backgroundColor: 'lime',
+              color: 'darkGreen',
+              height: '100vh',
+              padding: '1em',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <div>
+                <h1 style={{fontSize: '4em'}}>Image</h1>
+              </div>
+            </FullpageSection>
+
+            <FullpageSection style={{
+              backgroundColor: 'lime',
+              color: 'darkGreen',
+              height: '80vh',
+              padding: '1em',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <div>
+                <h1 style={{fontSize: '4em'}}>Use key</h1>
+                <p>You can use key <span role="img" aria-label="key up">⬆️</span> and <span role="img" aria-label="key down">⬇️</span> or key <span role="img" aria-label="key down">⬅️</span> and <span role="img" aria-label="key right">➡️</span></p>
+              </div>
+            </FullpageSection>
+
+            <FullpageSection style={{
+              backgroundColor: this.state.backgroundColor,
               color: 'white',
               padding: '1em',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              transition: 'background-color 1000ms linear',
             }}
-            key={`extraSlide${index}`}
-            >
-            <div>{slide.content}</div>
+            onShow={() => {
+              this.setState({
+                backgroundColor: 'teal'
+              })
+            }}
+            onHide={() => {
+              this.setState({
+                backgroundColor: 'coral'
+              })
+            }}>
+              <div>
+                <h1 style={{fontSize: '4em'}}><FullpageSection.Number/></h1>
+                <button onClick={this.addSlide}>addSlide</button>
+                <p style={{ fontSize: '2em'}}>Page <FullpageSection.Number style={{ fontSize: '3em'}}/> / <FullpageCount style={{ fontSize: '1em'}}/></p>
+              </div>
             </FullpageSection>
-          ))
-        }
 
-        <FullpageSection style={{
-          backgroundColor: 'firebrick',
-          color: 'white',
-          padding: '1em',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-          <div>
-            <h1 style={{fontSize: '4em'}}><FullpageSection.Number/></h1>
-            <button onClick={this.addSlide}>addSlide</button>
-            <button onClick={this.removeSlide}>removeSlide</button>
-          </div>
-        </FullpageSection>
+            {
+              extraSlide.map((slide, index) => (
+                <FullpageSection style={{
+                  backgroundColor: 'purple',
+                  color: 'white',
+                  padding: '1em',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                key={`extraSlide${index}`}
+                >
+                <div>{slide.content}</div>
+                </FullpageSection>
+              ))
+            }
 
-        <FullpageSection style={{
-          backgroundColor: 'orange',
-          color: 'firebrick',
-          height: '80vh',
-          padding: '1em',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-        <h1 style={{fontSize: '2em'}}><FullpageSection.Number/> Small</h1>
-        </FullpageSection>
+            <FullpageSection style={{
+              backgroundColor: 'firebrick',
+              color: 'white',
+              padding: '1em',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <div>
+                <h1 style={{fontSize: '4em'}}><FullpageSection.Number/></h1>
+                <button onClick={this.addSlide}>addSlide</button>
+                <button onClick={this.removeSlide}>removeSlide</button>
+              </div>
+            </FullpageSection>
 
-      </Fullpage>
+            <FullpageSection style={{
+              backgroundColor: 'orange',
+              color: 'firebrick',
+              height: '80vh',
+              padding: '1em',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <h1 style={{fontSize: '2em'}}><FullpageSection.Number/> Small</h1>
+            </FullpageSection>
+
+          </FullPageSections>
+        </Fullpage>
     )
   }
 }

@@ -19,7 +19,7 @@
     "deploy": "gh-pages -d example/build"
   },
   "dependencies": {
-    "memoize-one": "^4.0.2"
+    
   },
   "peerDependencies": {
     "prop-types": "^15.5.4",

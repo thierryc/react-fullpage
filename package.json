@@ -18,9 +18,7 @@
     "predeploy": "cd example && ncu -u && npm install && npm run build",
     "deploy": "gh-pages -d example/build"
   },
-  "dependencies": {
-    
-  },
+  "dependencies": {},
   "peerDependencies": {
     "prop-types": "^15.5.4",
     "react": "^16.6.0",

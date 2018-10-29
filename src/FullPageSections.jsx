@@ -9,6 +9,8 @@ class FullPageSections extends PureComponent {
   static contextType = FullpageContext;
 
   static propTypes = {
+    children: PropTypes.node.isRequired,
+    className: PropTypes.string,
     style: PropTypes.objectOf(PropTypes.oneOfType([
       PropTypes.number,
       PropTypes.string,
@@ -17,11 +19,12 @@ class FullPageSections extends PureComponent {
   };
 
   static defaultProps = {
+    className: '',
     style: {
       position: 'absolute',
       left: 0,
       right: 0,
-    }
+    },
   };
 
   render() {
@@ -35,12 +38,12 @@ class FullPageSections extends PureComponent {
         {
           ctx => (
             <div
-              name='Warper'
+              name="Warper"
               style={ctx.style} // from
               ref={this.warperRef}
             >
               <div
-                name='Inner'
+                name="Inner"
                 className={className}
                 style={{
                   transition: `transform ${ctx.transitionTiming}ms cubic-bezier(0.645, 0.045, 0.355, 1.000)`,

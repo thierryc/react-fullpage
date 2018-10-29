@@ -69,7 +69,7 @@ export default class App extends Component {
               <div>
                 <h1 style={{fontSize: '4em'}}>React Fullpage</h1>
                 <h2 style={{fontSize: '2em'}}>Create Fullscreen Scrolling Websites</h2>
-                <p>Version 0.1.2-alpha</p>
+                <p>Version 0.1.3-alpha</p>
               </div>
             </FullpageSection>
 

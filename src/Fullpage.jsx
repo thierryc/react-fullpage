@@ -96,7 +96,6 @@ class Fullpage extends PureComponent {
   }
 
   subscribe(slide) {
-    console.log(slide);
     // add new slide (push)
     const newSlides = [...this.slides, slide];
     // sort slide for top to bottom
@@ -116,7 +115,7 @@ class Fullpage extends PureComponent {
     this.setState({ count: this.slides.length });
     this.ticking = false;
     this.handleResize();
-    this.handleScroll();
+    setTimeout(this.handleScroll, 100);
     return slide;
   }
 
@@ -139,7 +138,7 @@ class Fullpage extends PureComponent {
         });
 
         this.setState({
-          pageYOffset
+          pageYOffset,
         });
 
         this.goto(newSlide);
@@ -203,8 +202,9 @@ class Fullpage extends PureComponent {
     return true;
   }
 
+  // TODO: add update methode
   update() {
-
+    return this;
   }
 
   goto(newSlide, resetScroll = false) {
@@ -234,7 +234,7 @@ class Fullpage extends PureComponent {
         onShow(translateY);
       }
       // call back function
-      // onChange(this.state);
+      onChange(this.state);
     }
     return newSlide;
   }
@@ -264,12 +264,13 @@ class Fullpage extends PureComponent {
     const {
       children,
       style,
-      warperStyle,
       className,
       transitionTiming,
     } = this.props;
 
-    const { translateY, pageYOffset, offsetHeight, number, count } = this.state;
+    const {
+      translateY, pageYOffset, offsetHeight, number, count,
+    } = this.state;
 
     return (
       <FullpageContext.Provider value={{
@@ -293,7 +294,7 @@ class Fullpage extends PureComponent {
       }}
       >
         <div
-          name='Driver'
+          name="Driver"
           style={{ position: 'relative' }}
           ref={this.driverRef}
         />

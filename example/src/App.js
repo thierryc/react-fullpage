@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import Fullpage, { FullPageSections, FullpageSection, FullpageCount, FullpageNavigation } from '@ap.cx/react-fullpage'
 import "babel-polyfill";
 
@@ -7,7 +7,7 @@ export default class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      backgroundColor: 'coral',
+      backgroundColor: '#05293B',
       extraSlide: []
     }
     this.addSlide = this.addSlide.bind(this);
@@ -20,10 +20,10 @@ export default class App extends Component {
 
   addSlide() {
     const { extraSlide } = this.state;
-    const content = <div>
-      <h1>New content {extraSlide.length + 1}</h1>
+    const content = <Fragment>
+      <h1><FullpageSection.Number/>. New content</h1>
       <p>Lorem ipsum content.</p>
-    </div>
+    </Fragment>
     this.setState({
       extraSlide: extraSlide.concat([{content}])
     });
@@ -41,6 +41,7 @@ export default class App extends Component {
   render () {
     const { extraSlide } = this.state;
     return (
+      <React.StrictMode>
         <Fullpage
           desktopForceStep={true}
           onChange={this.onChange}
@@ -48,18 +49,14 @@ export default class App extends Component {
 
           <FullpageNavigation
             style={{
-              backgroundColor: 'orange',
-              position: 'fixed',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+
             }}
           />
 
           <FullPageSections>
             <FullpageSection style={{
-              backgroundColor: 'lime',
-              color: 'darkGreen',
+              backgroundColor: '#F5F4F2',
+              color: '#05293B',
               height: '80vh',
               padding: '1em',
               display: 'flex',
@@ -67,15 +64,25 @@ export default class App extends Component {
               justifyContent: 'center',
             }}>
               <div>
-                <h1 style={{fontSize: '4em'}}>React Fullpage</h1>
-                <h2 style={{fontSize: '2em'}}>Create Fullscreen Scrolling Websites</h2>
-                <p>Version 0.1.3-alpha</p>
+                <h1 style={{
+                  fontSize: '3.4em',
+                  letterSpacing: -0.14,
+                  marginTop: '0.54em',
+                  marginBottom: '0.4em',
+                }}>React Fullpage</h1>
+                <h2 style={{
+                  fontSize: '1.75em',
+                  letterSpacing: -0.14,
+                  marginTop: '0.3em',
+                  marginBottom: '0.4em',
+                }}>Create Fullscreen Scrolling Websites</h2>
+                <p>Version 0.1.4-alpha</p>
               </div>
             </FullpageSection>
 
             <FullpageSection style={{
-              backgroundColor: 'lime',
-              color: 'darkGreen',
+              backgroundColor: '#EBEAE5',
+              color: '#05293B',
               height: '100vh',
               padding: '1em',
               display: 'flex',
@@ -83,23 +90,45 @@ export default class App extends Component {
               justifyContent: 'center',
             }}>
               <div>
-                <h1 style={{fontSize: '4em'}}>Image</h1>
+                <h1 style={{
+                  fontSize: '3.4em',
+                  letterSpacing: -0.14,
+                  marginTop: '0.54em',
+                  marginBottom: '0.4em',
+                }}>Create a Fullpage beautiful mobile website</h1>
               </div>
             </FullpageSection>
 
             <FullpageSection style={{
-              backgroundColor: 'lime',
-              color: 'darkGreen',
+              backgroundColor: '#EBEAE5',
+              color: '#05293B',
               height: '80vh',
               padding: '1em',
               display: 'flex',
+              flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-              <div>
-                <h1 style={{fontSize: '4em'}}>Use key</h1>
-                <p>You can use key <span role="img" aria-label="key up">⬆️</span> and <span role="img" aria-label="key down">⬇️</span> or key <span role="img" aria-label="key down">⬅️</span> and <span role="img" aria-label="key right">➡️</span></p>
-              </div>
+
+              <h1 style={{
+                fontSize: '3.4em',
+                letterSpacing: -0.14,
+                marginTop: '0.54em',
+                marginBottom: '0',
+              }}>Use key</h1>
+
+              <div style={{
+                maxWidth: 660,
+              }}><img style={{
+                width: '100%',
+              }} src='/assets/keys.gif' alt='Next Back keys'/></div>
+
+              <p
+                style={{
+                  marginTop: '0.54em',
+                }}
+              >You can use key <span role="img" aria-label="key up">⬆️</span> and <span role="img" aria-label="key down">⬇️</span> or key <span role="img" aria-label="key down">⬅️</span> and <span role="img" aria-label="key right">➡️</span></p>
+
             </FullpageSection>
 
             <FullpageSection style={{
@@ -113,16 +142,16 @@ export default class App extends Component {
             }}
             onShow={() => {
               this.setState({
-                backgroundColor: 'teal'
+                backgroundColor: '#266B8C'
               })
             }}
             onHide={() => {
               this.setState({
-                backgroundColor: 'coral'
+                backgroundColor: '#05293B'
               })
             }}>
               <div>
-                <h1 style={{fontSize: '4em'}}><FullpageSection.Number/></h1>
+                <h1 style={{fontSize: '4em'}}>Events</h1>
                 <button onClick={this.addSlide}>addSlide</button>
                 <p style={{ fontSize: '2em'}}>Page <FullpageSection.Number style={{ fontSize: '3em'}}/> / <FullpageCount style={{ fontSize: '1em'}}/></p>
               </div>
@@ -140,7 +169,7 @@ export default class App extends Component {
                 }}
                 key={`extraSlide${index}`}
                 >
-                <div>{slide.content}</div>
+                {slide.content}
                 </FullpageSection>
               ))
             }
@@ -174,6 +203,7 @@ export default class App extends Component {
 
           </FullPageSections>
         </Fullpage>
+      </React.StrictMode>
     )
   }
 }

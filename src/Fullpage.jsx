@@ -76,10 +76,6 @@ class Fullpage extends PureComponent {
     }
   }
 
-  componentDidUpdate() {
-    this.handleResize();
-  }
-
   componentWillUnmount() {
     // set body height == to 'auto'
     if (typeof window !== 'undefined') {
@@ -113,9 +109,8 @@ class Fullpage extends PureComponent {
   unsubscribe(slide) {
     this.slides = this.slides.filter(s => s.el !== slide.el);
     this.setState({ count: this.slides.length });
-    this.ticking = false;
     this.handleResize();
-    setTimeout(this.handleScroll, 100);
+    setTimeout(this.handleScroll, 0);
     return slide;
   }
 
@@ -208,6 +203,7 @@ class Fullpage extends PureComponent {
   }
 
   goto(newSlide, resetScroll = false) {
+    console.log('goto');
     const { slide } = this.state;
     const { transitionTiming, onChange } = this.props;
     if (slide !== newSlide) {
@@ -282,7 +278,7 @@ class Fullpage extends PureComponent {
         subscribe: this.subscribe,
         unsubscribe: this.unsubscribe,
         update: this.update,
-        goto: this.goto,
+        goto: (slide) => this.goto(slide),
         back: this.back,
         next: this.next,
         getIndex: this.getIndex,
@@ -291,6 +287,7 @@ class Fullpage extends PureComponent {
         style,
         warperRef: this.warperRef,
         fullpageRef: this.fullpageRef,
+        slides: this.slides,
       }}
       >
         <div

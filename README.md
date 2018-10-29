@@ -2,25 +2,22 @@
 
 https://thierryc.github.io/react-fullpage/
 
-0.0.9 Alpha Version. **Not for production**.
+0.1.2-alpha Alpha Version. **Not for production**.
 
 This project is still in a very **early stage**.
 You shouldn't use this for production unless you really know what you're doing. 🖖
 
-Try "features/variableHeight" branch.
-
-https://github.com/thierryc/react-fullpage/tree/features/variableHeight
-
 ## Features
 
-- Simple
-- Mobile ready
+- Design for Mobile
+- Nested Component
 - Hide safari's header on Scroll on iphone and ipad
 - Hide Google Chrome's header on Scroll on iOS and Android
 - Drived by the scroll
 - CSS animation
 - GPU/CPU swtich
 - Very Small
+- MIT License
 
 > Create Fullscreen Scrolling Websites
 
@@ -32,34 +29,43 @@ https://github.com/thierryc/react-fullpage/tree/features/variableHeight
 ```bash
 npm install --save @ap.cx/react-fullpage
 ```
-
 ## Usage
 
 ```jsx
+
 import React, { Component } from 'react'
-import Fullpage, { FullpageSection } from '@ap.cx/react-fullpage'
+import Fullpage, { FullPageSections, FullpageSection } from '@ap.cx/react-fullpage'
 
 export default class App extends Component {
   render () {
     return (
       <Fullpage>
-        <FullpageSection style={{
-          backgroundColor: 'lime',
-          height: '80vh',
-          padding: '1em',
-        }}>1</FullpageSection>
-        <FullpageSection style={{
-          backgroundColor: 'coral',
-          padding: '1em',
-        }}>2</FullpageSection>
-        <FullpageSection style={{
-          backgroundColor: 'firebrick',
-          padding: '1em',
-        }}>3</FullpageSection>
+
+        <FullPageSections>
+
+          <FullpageSection style={{
+            backgroundColor: 'lime',
+            height: '80vh',
+            padding: '1em',
+          }}>1</FullpageSection>
+          <FullpageSection style={{
+            backgroundColor: 'coral',
+            padding: '1em',
+          }}>2</FullpageSection>
+          <FullpageSection style={{
+            backgroundColor: 'firebrick',
+            padding: '1em',
+          }}>3</FullpageSection>
+
+        </FullPageSections>
+
       </Fullpage>
     )
   }
 }
+
+Migation from previous version.
+Add the ``` <FullPageSections> ... </FullPageSections>```
 
 ```
 

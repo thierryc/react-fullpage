@@ -3,8 +3,13 @@
  */
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import FullpageContext from './FullpageContext';
+
+const FullpageSectionContext = React.createContext();
 
 class FullpageSection extends PureComponent {
+  static contextType = FullpageContext;
+
   static propTypes = {
     children: PropTypes.node.isRequired,
     height: PropTypes.string,
@@ -14,34 +19,44 @@ class FullpageSection extends PureComponent {
       PropTypes.bool,
     ])),
     className: PropTypes.string,
-    onShow: PropTypes.func,
-    onHide: PropTypes.func,
+    onShow: PropTypes.func, // eslint-disable-line react/no-unused-prop-types
+    onHide: PropTypes.func, // eslint-disable-line react/no-unused-prop-types
   };
 
   static defaultProps = {
     height: '100vh',
     style: {},
     className: '',
-    onShow: null,
-    onHide: null,
+    onShow: null, // eslint-disable-line no-unused-vars
+    onHide: null, // eslint-disable-line no-unused-vars
   };
 
-  constructor(props) {
-    super(props);
-    this.ref = React.createRef();
-    this.state = {};
-    this.sectionDidShow = this.sectionDidShow.bind(this);
-    this.sectionDidHide = this.sectionDidHide.bind(this);
+  static Number = ({ style = {} }) => (
+    <FullpageSectionContext.Consumer>
+      { ctx => <span style={style}>{`${ctx.index + 1}`}</span> }
+    </FullpageSectionContext.Consumer>
+  );
+
+  constructor(props, context) {
+    super(props, context);
+    this.sectionRef = React.createRef();
   }
 
-  sectionDidShow() {
-    const { onShow } = this.props;
-    onShow();
+  componentDidMount() {
+    const { subscribe } = this.context;
+    this.el = this.sectionRef;
+    subscribe(this);
   }
 
-  sectionDidHide() {
-    const { onHide } = this.props;
-    onHide();
+  componentDidUpdate() {
+    const { getIndex } = this.context;
+    this.index = getIndex(this);
+    // update(this);
+  }
+
+  componentWillUnmount() {
+    const { unsubscribe } = this.context;
+    unsubscribe(this);
   }
 
   render() {
@@ -51,11 +66,15 @@ class FullpageSection extends PureComponent {
       style,
       className,
     } = this.props;
-
     return (
-      <section className={className} style={{ height, ...style }} ref={this.ref}>
-        {children}
-      </section>
+      <FullpageSectionContext.Provider value={{
+        index: this.index,
+      }}
+      >
+        <section className={className} style={{ height, ...style }} ref={this.sectionRef}>
+          { children }
+        </section>
+      </FullpageSectionContext.Provider>
     );
   }
 }

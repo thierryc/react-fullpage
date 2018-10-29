@@ -3,28 +3,20 @@
  */
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import memoize from 'memoize-one';
-import Section from './FullpageSection';
-import Navigation from './FullpageNavigation';
-
-import styles from './styles.css';
+import FullpageContext from './FullpageContext';
 
 class Fullpage extends PureComponent {
+  static contextType = FullpageContext;
+
   static propTypes = {
     children: PropTypes.node.isRequired,
     transitionTiming: PropTypes.number,
-    warperStyle: PropTypes.objectOf(PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string,
-      PropTypes.bool,
-    ])),
     style: PropTypes.objectOf(PropTypes.oneOfType([
       PropTypes.number,
       PropTypes.string,
       PropTypes.bool,
     ])),
     className: PropTypes.string,
-    navigation: PropTypes.bool,
     onChange: PropTypes.func,
     keyboardShortcut: PropTypes.bool,
   };
@@ -32,54 +24,49 @@ class Fullpage extends PureComponent {
   static defaultProps = {
     transitionTiming: 700,
     style: {
-      position: 'absolute',
-      left: 0,
-      right: 0,
-    },
-    warperStyle: {
       position: 'fixed',
       top: 0,
       left: 0,
       right: 0,
     },
     className: '',
-    navigation: false,
     onChange: null,
     keyboardShortcut: true,
   };
 
-  constructor(props) {
-    super(props);
-    this.driver = React.createRef();
-    this.warperRef = React.createRef();
-    this.fullpageRef = React.createRef();
-    this.scrollTicking = false;
-    this.resizeTicking = false;
-    this.historyTimeout = null;
-    this.children = null;
-    this.slides = null;
+  constructor(props, context) {
+    super(props, context);
+    this.slides = [];
     this.state = {
+      slide: null,
       translateY: 0,
-      currentSlide: null,
+      pageYOffset: 0,
+      offsetHeight: 0,
+      count: 0,
+      number: 0,
+      resetScroll: false,
     };
-    this.lastKnownScrollPosition = 0;
+    this.ticking = false;
     this.fullPageHeight = 0;
     this.viewportHeight = 0;
-    this.onShow = {};
-    this.onHide = {};
+    // binds
+    this.subscribe = this.subscribe.bind(this);
+    this.unsubscribe = this.unsubscribe.bind(this);
+    this.update = this.update.bind(this);
+    this.getIndex = this.getIndex.bind(this);
+    // handle
     this.handleScroll = this.handleScroll.bind(this);
     this.handleResize = this.handleResize.bind(this);
     this.handleKeys = this.handleKeys.bind(this);
+    // refs
+    this.driverRef = React.createRef();
+    this.warperRef = React.createRef();
+    this.fullpageRef = React.createRef();
   }
 
   componentDidMount() {
     this.handleResize();
-    this.slides = this.getSlides(this.children);
-
-    this.setState({
-      currentSlide: this.slides[0],
-    });
-
+    this.setState({ slide: this.slides[0] });
     if (typeof window !== 'undefined') {
       window.addEventListener('scroll', this.handleScroll);
       window.addEventListener('resize', this.handleResize);
@@ -89,9 +76,8 @@ class Fullpage extends PureComponent {
     }
   }
 
-  componentDidUpdate() { // prevProps
+  componentDidUpdate() {
     this.handleResize();
-    this.slides = this.getSlides(this.children);
   }
 
   componentWillUnmount() {
@@ -105,24 +91,78 @@ class Fullpage extends PureComponent {
     }
   }
 
-  getChildren = memoize(
-    children => React.Children.map(children, (child) => {
-      const props = {};
-      if (child && child.type === Section) {
-        props.ref = React.createRef();
-      }
-      return React.cloneElement(child, props);
-    }),
-  );
+  getIndex(slide) {
+    return this.slides.indexOf(slide);
+  }
 
-  getSlides = memoize(
-    children => children.filter(
-      child => (child.type && child.type === Section),
-    ).map((slide, index) => {
-      const el = slide.ref.current.ref.current;
-      return { slide, el, index };
-    }),
-  );
+  subscribe(slide) {
+    // add new slide (push)
+    const newSlides = [...this.slides, slide];
+    // sort slide for top to bottom
+    this.slides = newSlides.sort((a, b) => {
+      const aTop = a.el.current.offsetTop;
+      const bTop = b.el.current.offsetTop;
+      return aTop - bTop;
+    });
+    this.setState({ count: this.slides.length });
+    this.ticking = false;
+    this.handleResize();
+    return slide;
+  }
+
+  unsubscribe(slide) {
+    this.slides = this.slides.filter(s => s.el !== slide.el);
+    this.setState({ count: this.slides.length });
+    this.ticking = false;
+    this.handleResize();
+    setTimeout(this.handleScroll, 100);
+    return slide;
+  }
+
+  handleScroll() {
+    if (!this.ticking) {
+      window.requestAnimationFrame(() => {
+        const { resetScroll, translateY } = this.state;
+        // resetScroll
+        if (resetScroll) {
+          window.scrollTo(0, translateY * -1);
+          this.setState({
+            resetScroll: false,
+          });
+        }
+
+        const pageYOffset = window.pageYOffset || 0;
+        const newSlide = this.slides.find((slide) => {
+          const el = slide.el.current;
+          return pageYOffset < el.offsetTop + (el.offsetHeight * 0.5);
+        });
+
+        this.setState({
+          pageYOffset,
+        });
+
+        this.goto(newSlide);
+        this.ticking = false;
+      });
+    }
+    this.ticking = true;
+  }
+
+  handleResize() {
+    if (!this.ticking) {
+      window.requestAnimationFrame(() => {
+        // update count
+        this.viewportHeight = Math.max(
+          document.documentElement.clientHeight,
+          window.innerHeight || 0,
+        );
+        this.fullPageHeight = this.fullpageRef.current.clientHeight;
+        this.driverRef.current.style.height = `${this.fullPageHeight}px`;
+        this.ticking = false;
+      });
+    }
+    this.ticking = true;
+  }
 
   handleKeys(event) {
     const { keyboardShortcut } = this.props;
@@ -135,170 +175,131 @@ class Fullpage extends PureComponent {
       || event.keyCode === 37 // left:      37,
       || event.keyCode === 38 // up:        38,
     ) {
-      return (event.shiftKey) ? this.gotoFirst(event) : this.gotoPrevious(event);
+      event.preventDefault();
+      return (event.shiftKey) ? this.first(event) : this.back(event);
     }
     if (
       event.keyCode === 34 // pageDown:  34,
       || event.keyCode === 39 // right:     39,
       || event.keyCode === 40 // down:      40,
     ) {
-      return (event.shiftKey) ? this.gotoLast(event) : this.gotoNext(event);
+      event.preventDefault();
+      return (event.shiftKey) ? this.last(event) : this.next(event);
     }
     if (
       event.keyCode === 35 // end:       35,
     ) {
-      return this.gotoLast(event);
+      event.preventDefault();
+      return this.last(event);
     }
     if (
       event.keyCode === 36 // home:      36,
     ) {
-      return this.gotoFirst(event);
+      event.preventDefault();
+      return this.first(event);
     }
+
     return true;
   }
 
-  handleScroll() {
-    if (!this.scrollTicking) {
-      window.requestAnimationFrame(() => {
-        const { currentSlide } = this.state;
-        const lastKnownScrollPosition = window.pageYOffset || 0;
-        const newSlide = this.slides.find(slide => (
-          lastKnownScrollPosition < slide.el.offsetTop + (slide.el.offsetHeight * 0.5)));
-        this.gotoSlide(newSlide, currentSlide);
-        this.lastKnownScrollPosition = lastKnownScrollPosition;
-        this.scrollTicking = false;
-      });
-    }
-    this.scrollTicking = true;
+  // TODO: add update methode
+  update() {
+    return this;
   }
 
-  handleResize() {
-    if (!this.resizeTicking) {
-      window.requestAnimationFrame(() => {
-        this.viewportHeight = Math.max(
-          document.documentElement.clientHeight,
-          window.innerHeight || 0,
-        );
-        this.fullPageHeight = this.fullpageRef.current.clientHeight;
-        this.driver.current.style.height = `${this.fullPageHeight}px`;
-        this.resizeTicking = false;
-      });
-    }
-    this.resizeTicking = true;
-  }
-
-  gotoFirst(event) {
-    const { currentSlide } = this.state;
-    event.preventDefault();
-    this.gotoSlide(
-      this.slides[0],
-      currentSlide,
-      true,
-    );
-  }
-
-  gotoLast(event) {
-    const { currentSlide } = this.state;
-    event.preventDefault();
-    this.gotoSlide(
-      this.slides[this.slides.length - 1],
-      currentSlide,
-      true,
-    );
-  }
-
-  // @keydown( ['up', 'left'] )
-  gotoPrevious(event) {
-    const { currentSlide } = this.state;
-    event.preventDefault();
-    this.gotoSlide(
-      this.slides[Math.max(0, currentSlide.index - 1)],
-      currentSlide,
-      true,
-    );
-  }
-
-  // @keydown( ['down', 'right'] )
-  gotoNext(event) {
-    const { currentSlide } = this.state;
-    event.preventDefault();
-    this.gotoSlide(
-      this.slides[Math.min(this.slides.length - 1, currentSlide.index + 1)],
-      currentSlide,
-      true,
-    );
-  }
-
-  gotoSlide(newSlide, currentSlide, scrollTo = false) {
+  goto(newSlide, resetScroll = false) {
+    const { slide } = this.state;
     const { transitionTiming, onChange } = this.props;
-
-    // TODO: try an other coapraison ... exclude prop
-    if (currentSlide.index !== newSlide.index) {
+    if (slide !== newSlide) {
       const translateY = Math.max(
         (this.fullPageHeight - this.viewportHeight) * -1,
-        newSlide.el.offsetTop * -1,
+        newSlide.el.current.offsetTop * -1,
       );
 
-      const previousSlide = currentSlide;
+      const { onHide } = slide.props;
+      if (onHide && typeof onHide === 'function') {
+        setTimeout(() => onHide(translateY), transitionTiming);
+      }
+
       this.setState({
-        previousSlide,
-        currentSlide: newSlide,
+        slide: newSlide,
+        number: this.getIndex(newSlide),
         translateY,
+        offsetHeight: newSlide.el.current.offsetHeight,
+        resetScroll,
       });
 
-      // TODO onShow onHide
-      if (previousSlide) {
-        const { onHide: previousSlideOnHide = null } = previousSlide.slide.props;
-        if (previousSlideOnHide && typeof previousSlideOnHide === 'function') {
-          setTimeout(() => previousSlideOnHide(translateY), transitionTiming);
-        }
+      const { onShow } = newSlide.props;
+      if (onShow && typeof onShow === 'function') {
+        onShow(translateY);
       }
-
-      const { onShow: newSlideOnShow = null } = newSlide.slide.props;
-      if (newSlideOnShow && typeof newSlideOnShow === 'function') {
-        newSlideOnShow(translateY);
-      }
-
-      if (scrollTo) {
-        window.scrollTo(0, newSlide.el.offsetTop);
-      }
-
+      // call back function
       onChange(this.state);
     }
+    return newSlide;
+  }
+
+  back() {
+    const { number } = this.state;
+    const index = Math.max(0, number - 1);
+    this.goto(this.slides[index], true);
+  }
+
+  next() {
+    const { length } = this.slides;
+    const { number } = this.state;
+    const index = Math.min(length - 1, number + 1);
+    this.goto(this.slides[index], true);
+  }
+
+  first() {
+    this.goto(this.slides[0], true);
+  }
+
+  last() {
+    this.goto(this.slides[this.slides.length - 1], true);
   }
 
   render() {
     const {
       children,
-      navigation,
       style,
-      warperStyle,
       className,
       transitionTiming,
     } = this.props;
 
-    this.children = this.getChildren(children);
-
-    const { translateY, previousSlide } = this.state;
+    const {
+      translateY, pageYOffset, offsetHeight, number, count,
+    } = this.state;
 
     return (
-      <div>
-        <div style={{ position: 'relative' }} ref={this.driver} />
-        <div className={styles.fullpageWarper} style={{ ...warperStyle }} ref={this.warperRef}>
-          <div
-            className={[styles.fullpage, className].join(', ')}
-            style={{
-              transition: `transform ${transitionTiming}ms cubic-bezier(0.645, 0.045, 0.355, 1.000)`,
-              ...style,
-              transform: `translate3D(0, ${(translateY)}px, 0)`,
-            }}
-            ref={this.fullpageRef}
-          >
-            { this.children }
-            { navigation && <Navigation data={children} previousSlide={previousSlide} /> }
-          </div>
-        </div>
-      </div>
+      <FullpageContext.Provider value={{
+        translateY,
+        pageYOffset,
+        offsetHeight,
+        number,
+        count,
+        subscribe: this.subscribe,
+        unsubscribe: this.unsubscribe,
+        update: this.update,
+        goto: this.goto,
+        back: this.back,
+        next: this.next,
+        getIndex: this.getIndex,
+        transitionTiming,
+        className,
+        style,
+        warperRef: this.warperRef,
+        fullpageRef: this.fullpageRef,
+      }}
+      >
+        <div
+          name="Driver"
+          style={{ position: 'relative' }}
+          ref={this.driverRef}
+        />
+        { children }
+      </FullpageContext.Provider>
     );
   }
 }

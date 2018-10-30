@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import Fullpage, { FullPageSections, FullpageSection, FullpageCount, FullpageNavigation } from '@ap.cx/react-fullpage'
 import "babel-polyfill";
 
@@ -51,11 +51,7 @@ export default class App extends Component {
           onChange={this.onChange}
           >
 
-          <FullpageNavigation
-            style={{
-
-            }}
-          />
+          <FullpageNavigation/>
 
           <FullPageSections>
             <Slide1/>

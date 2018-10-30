@@ -24,7 +24,7 @@ const Slide3 = () => (
       maxWidth: 660,
     }}><img style={{
       width: '100%',
-    }} src='/assets/keys.gif' alt='Next Back keys'/></div>
+    }} src='assets/keys.gif' alt='Next Back keys'/></div>
 
     <p
       style={{

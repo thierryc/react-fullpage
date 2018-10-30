@@ -2,6 +2,10 @@ import React, { Component, Fragment } from 'react'
 import Fullpage, { FullPageSections, FullpageSection, FullpageCount, FullpageNavigation } from '@ap.cx/react-fullpage'
 import "babel-polyfill";
 
+import Slide1 from './components/slides/Slide1';
+import Slide2 from './components/slides/Slide2';
+import Slide3 from './components/slides/Slide3';
+
 export default class App extends Component {
 
   constructor(props) {
@@ -20,10 +24,10 @@ export default class App extends Component {
 
   addSlide() {
     const { extraSlide } = this.state;
-    const content = <Fragment>
+    const content = <div>
       <h1><FullpageSection.Number/>. New content</h1>
       <p>Lorem ipsum content.</p>
-    </Fragment>
+    </div>
     this.setState({
       extraSlide: extraSlide.concat([{content}])
     });
@@ -54,82 +58,9 @@ export default class App extends Component {
           />
 
           <FullPageSections>
-            <FullpageSection style={{
-              backgroundColor: '#F5F4F2',
-              color: '#05293B',
-              height: '80vh',
-              padding: '1em',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-              <div>
-                <h1 style={{
-                  fontSize: '3.4em',
-                  letterSpacing: -0.14,
-                  marginTop: '0.54em',
-                  marginBottom: '0.4em',
-                }}>React Fullpage</h1>
-                <h2 style={{
-                  fontSize: '1.75em',
-                  letterSpacing: -0.14,
-                  marginTop: '0.3em',
-                  marginBottom: '0.4em',
-                }}>Create Fullscreen Scrolling Websites</h2>
-                <p>Version 0.1.4-alpha</p>
-              </div>
-            </FullpageSection>
-
-            <FullpageSection style={{
-              backgroundColor: '#EBEAE5',
-              color: '#05293B',
-              height: '100vh',
-              padding: '1em',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-              <div>
-                <h1 style={{
-                  fontSize: '3.4em',
-                  letterSpacing: -0.14,
-                  marginTop: '0.54em',
-                  marginBottom: '0.4em',
-                }}>Create a Fullpage beautiful mobile website</h1>
-              </div>
-            </FullpageSection>
-
-            <FullpageSection style={{
-              backgroundColor: '#EBEAE5',
-              color: '#05293B',
-              height: '80vh',
-              padding: '1em',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-
-              <h1 style={{
-                fontSize: '3.4em',
-                letterSpacing: -0.14,
-                marginTop: '0.54em',
-                marginBottom: '0',
-              }}>Use key</h1>
-
-              <div style={{
-                maxWidth: 660,
-              }}><img style={{
-                width: '100%',
-              }} src='/assets/keys.gif' alt='Next Back keys'/></div>
-
-              <p
-                style={{
-                  marginTop: '0.54em',
-                }}
-              >You can use key <span role="img" aria-label="key up">⬆️</span> and <span role="img" aria-label="key down">⬇️</span> or key <span role="img" aria-label="key down">⬅️</span> and <span role="img" aria-label="key right">➡️</span></p>
-
-            </FullpageSection>
+            <Slide1/>
+            <Slide2/>
+            <Slide3/>
 
             <FullpageSection style={{
               backgroundColor: this.state.backgroundColor,

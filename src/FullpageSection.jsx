@@ -75,7 +75,8 @@ class FullpageSection extends PureComponent {
             height,
             ...style,
           }}
-          ref={this.sectionRef}>
+          ref={this.sectionRef}
+        >
           { children }
         </section>
       </FullpageSectionContext.Provider>

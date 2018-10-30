@@ -17,23 +17,30 @@ class FullpageNavigation extends PureComponent {
       PropTypes.string,
       PropTypes.bool,
     ])),
+    itemStyle: PropTypes.objectOf(PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string,
+      PropTypes.bool,
+    ])),
+    reverse: PropTypes.bool,
   };
 
   static defaultProps = {
     style: {},
     itemStyle: {},
+    reverse: false,
   };
 
   render() {
     const { style, itemStyle, reverse = false } = this.props;
     const {
-      translateY, pageYOffset, offsetHeight, number, count, slides, transitionTiming
+      number, slides, transitionTiming,
     } = this.context;
 
     const gotoSlide = (slide) => {
-      this.context.goto(slide);
-      return true;
-    }
+      const { goto } = this.context;
+      goto(slide);
+    };
 
     return (
       <div style={{
@@ -52,14 +59,13 @@ class FullpageNavigation extends PureComponent {
       }}
       >
         {
-          slides.map((slide, i) =>(
+          slides.map((slide, i) => (
             <div
               key={i.toString()}
               style={{
                 borderRadius: '50%',
                 height: (number === i) ? 14 : 10,
                 width: (number === i) ? 14 : 10,
-                opacity: 0.5,
                 margin: (number === i) ? 3 : 5,
                 backgroundColor: (reverse) ? 'white' : 'black',
                 opacity: (number === i) ? 1 : 0.5,
@@ -67,10 +73,14 @@ class FullpageNavigation extends PureComponent {
                 ...itemStyle,
               }}
               onClick={() => gotoSlide(slide)}
+              aria-label={`Slide ${i}`}
             >
               <span style={{
                 display: 'none',
-              }}>{`${i}`}</span>
+              }}
+              >
+                {`${i}`}
+              </span>
             </div>
           ))
         }

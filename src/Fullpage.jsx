@@ -203,7 +203,6 @@ class Fullpage extends PureComponent {
   }
 
   goto(newSlide, resetScroll = false) {
-    console.log('goto');
     const { slide } = this.state;
     const { transitionTiming, onChange } = this.props;
     if (slide !== newSlide) {
@@ -278,7 +277,7 @@ class Fullpage extends PureComponent {
         subscribe: this.subscribe,
         unsubscribe: this.unsubscribe,
         update: this.update,
-        goto: (slide) => this.goto(slide),
+        goto: slide => this.goto(slide),
         back: this.back,
         next: this.next,
         getIndex: this.getIndex,

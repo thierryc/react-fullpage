@@ -17,43 +17,74 @@ class FullpageNavigation extends PureComponent {
       PropTypes.string,
       PropTypes.bool,
     ])),
+    itemStyle: PropTypes.objectOf(PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string,
+      PropTypes.bool,
+    ])),
+    reverse: PropTypes.bool,
   };
 
   static defaultProps = {
-    style: {
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-    },
+    style: {},
+    itemStyle: {},
+    reverse: false,
   };
 
   render() {
-    const { style } = this.props;
+    const { style, itemStyle, reverse = false } = this.props;
     const {
-      translateY, pageYOffset, offsetHeight, number, count,
+      number, slides, transitionTiming,
     } = this.context;
 
+    const gotoSlide = (slide) => {
+      const { goto } = this.context;
+      goto(slide);
+    };
+
     return (
-      <ul style={{
+      <div style={{
         position: 'fixed',
+        height: '100vh',
         zIndex: 100,
-        top: -10,
+        top: 0,
+        right: 0,
+        listStyleType: 'none',
+        display: 'flex',
+        flexDirection: 'column',
+        flexWrap: 'nowrap',
+        justifyContent: 'center',
+        paddingRight: '1em',
         ...style,
-        display: 'none',
       }}
       >
-        {' translateY '}
-        {translateY}
-        {' pageYOffset '}
-        {pageYOffset}
-        {' offsetHeight: '}
-        {offsetHeight}
-        {' number '}
-        {number}
-        {' count '}
-        {count}
-      </ul>
+        {
+          slides.map((slide, i) => (
+            <div
+              key={i.toString()}
+              style={{
+                borderRadius: '50%',
+                height: (number === i) ? 14 : 10,
+                width: (number === i) ? 14 : 10,
+                margin: (number === i) ? 3 : 5,
+                backgroundColor: (reverse) ? 'white' : 'black',
+                opacity: (number === i) ? 1 : 0.5,
+                transition: `all ${transitionTiming * 0.5}ms ease-in-out`,
+                ...itemStyle,
+              }}
+              onClick={() => gotoSlide(slide)}
+              aria-label={`Slide ${i}`}
+            >
+              <span style={{
+                display: 'none',
+              }}
+              >
+                {`${i}`}
+              </span>
+            </div>
+          ))
+        }
+      </div>
     );
   }
 }

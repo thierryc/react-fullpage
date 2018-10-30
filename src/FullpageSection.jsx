@@ -48,12 +48,6 @@ class FullpageSection extends PureComponent {
     subscribe(this);
   }
 
-  componentDidUpdate() {
-    const { getIndex } = this.context;
-    this.index = getIndex(this);
-    // update(this);
-  }
-
   componentWillUnmount() {
     const { unsubscribe } = this.context;
     unsubscribe(this);
@@ -66,12 +60,23 @@ class FullpageSection extends PureComponent {
       style,
       className,
     } = this.props;
+
+    const { getIndex } = this.context;
+    this.index = getIndex(this);
+
     return (
       <FullpageSectionContext.Provider value={{
         index: this.index,
       }}
       >
-        <section className={className} style={{ height, ...style }} ref={this.sectionRef}>
+        <section
+          className={className}
+          style={{
+            height,
+            ...style,
+          }}
+          ref={this.sectionRef}
+        >
           { children }
         </section>
       </FullpageSectionContext.Provider>

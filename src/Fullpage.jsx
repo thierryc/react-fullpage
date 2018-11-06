@@ -122,7 +122,7 @@ class Fullpage extends PureComponent {
         if (resetScroll || debounceScroll) {
           window.scrollTo(0, translateY * -1);
         }
-        
+
         if (!debounceScroll) {
           const pageYOffset = window.pageYOffset || 0;
           const newSlide = this.slides.find((slide) => {
@@ -227,7 +227,6 @@ class Fullpage extends PureComponent {
       });
 
       setTimeout(() => this.setState({ debounceScroll: false }), transitionTiming);
-
 
 
       const { onShow } = newSlide.props;

@@ -110,33 +110,34 @@ class Fullpage extends PureComponent {
     this.slides = this.slides.filter(s => s.el !== slide.el);
     this.setState({ count: this.slides.length });
     this.handleResize();
-    setTimeout(this.handleScroll, 0);
+    this.handleScroll();
     return slide;
   }
 
   handleScroll() {
     if (!this.ticking) {
       window.requestAnimationFrame(() => {
-        const { resetScroll, translateY } = this.state;
-        // resetScroll
-        if (resetScroll) {
+        const { resetScroll, translateY, debounceScroll } = this.state;
+        // resetScroll or prevent scroll for debounceScroll
+        if (resetScroll || debounceScroll) {
           window.scrollTo(0, translateY * -1);
+        }
+        
+        if (!debounceScroll) {
+          const pageYOffset = window.pageYOffset || 0;
+          const newSlide = this.slides.find((slide) => {
+            const el = slide.el.current;
+            return pageYOffset < el.offsetTop + (el.offsetHeight * 0.5);
+          });
+
           this.setState({
+            pageYOffset,
             resetScroll: false,
           });
+
+          this.goto(newSlide);
         }
 
-        const pageYOffset = window.pageYOffset || 0;
-        const newSlide = this.slides.find((slide) => {
-          const el = slide.el.current;
-          return pageYOffset < el.offsetTop + (el.offsetHeight * 0.5);
-        });
-
-        this.setState({
-          pageYOffset,
-        });
-
-        this.goto(newSlide);
         this.ticking = false;
       });
     }
@@ -222,7 +223,12 @@ class Fullpage extends PureComponent {
         translateY,
         offsetHeight: newSlide.el.current.offsetHeight,
         resetScroll,
+        debounceScroll: true,
       });
+
+      setTimeout(() => this.setState({ debounceScroll: false }), transitionTiming);
+
+
 
       const { onShow } = newSlide.props;
       if (onShow && typeof onShow === 'function') {

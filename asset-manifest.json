@@ -1,6 +1,13 @@
 {
-  "main.css": "static/css/main.65027555.css",
-  "main.css.map": "static/css/main.65027555.css.map",
-  "main.js": "static/js/main.bd2dab13.js",
-  "main.js.map": "static/js/main.bd2dab13.js.map"
+  "main.css": "/react-fullpage/static/css/main.d857b597.chunk.css",
+  "main.js": "/react-fullpage/static/js/main.f82889c1.chunk.js",
+  "main.js.map": "/react-fullpage/static/js/main.f82889c1.chunk.js.map",
+  "static/js/1.9056cb01.chunk.js": "/react-fullpage/static/js/1.9056cb01.chunk.js",
+  "static/js/1.9056cb01.chunk.js.map": "/react-fullpage/static/js/1.9056cb01.chunk.js.map",
+  "runtime~main.js": "/react-fullpage/static/js/runtime~main.f1d5bd03.js",
+  "runtime~main.js.map": "/react-fullpage/static/js/runtime~main.f1d5bd03.js.map",
+  "static/css/main.d857b597.chunk.css.map": "/react-fullpage/static/css/main.d857b597.chunk.css.map",
+  "index.html": "/react-fullpage/index.html",
+  "precache-manifest.1fc6495bf7e7311d0a144969f372a7d7.js": "/react-fullpage/precache-manifest.1fc6495bf7e7311d0a144969f372a7d7.js",
+  "service-worker.js": "/react-fullpage/service-worker.js"
 }

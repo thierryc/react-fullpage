@@ -118,23 +118,26 @@ class Fullpage extends PureComponent {
     if (!this.ticking) {
       window.requestAnimationFrame(() => {
         const { resetScroll, translateY, debounceScroll } = this.state;
-        // resetScroll
+        // resetScroll or prevent scroll for debounceScroll
         if (resetScroll || debounceScroll) {
           window.scrollTo(0, translateY * -1);
         }
+        
+        if (!debounceScroll) {
+          const pageYOffset = window.pageYOffset || 0;
+          const newSlide = this.slides.find((slide) => {
+            const el = slide.el.current;
+            return pageYOffset < el.offsetTop + (el.offsetHeight * 0.5);
+          });
 
-        const pageYOffset = window.pageYOffset || 0;
-        const newSlide = this.slides.find((slide) => {
-          const el = slide.el.current;
-          return pageYOffset < el.offsetTop + (el.offsetHeight * 0.5);
-        });
+          this.setState({
+            pageYOffset,
+            resetScroll: false,
+          });
 
-        this.setState({
-          pageYOffset,
-          resetScroll: false,
-        });
+          this.goto(newSlide);
+        }
 
-        this.goto(newSlide);
         this.ticking = false;
       });
     }

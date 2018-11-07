@@ -17,7 +17,8 @@ You shouldn't use this for production unless you really know what you're doing. 
 - CSS animation
 - GPU/CPU swtich
 - Very Small
-- MIT License
+- MIT License (no fullpage.js dependency)
+
 
 > Create Fullscreen Scrolling Websites
 

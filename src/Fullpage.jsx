@@ -119,22 +119,21 @@ class Fullpage extends PureComponent {
       window.requestAnimationFrame(() => {
         const { resetScroll, translateY, debounceScroll } = this.state;
         // resetScroll or prevent scroll for debounceScroll
-        if (resetScroll || debounceScroll) {
+        if (resetScroll) {
           window.scrollTo(0, translateY * -1);
         }
 
+        const pageYOffset = window.pageYOffset || 0;
+        this.setState({
+          pageYOffset,
+          resetScroll: false,
+        });
+
         if (!debounceScroll) {
-          const pageYOffset = window.pageYOffset || 0;
           const newSlide = this.slides.find((slide) => {
             const el = slide.el.current;
             return pageYOffset < el.offsetTop + (el.offsetHeight * 0.5);
           });
-
-          this.setState({
-            pageYOffset,
-            resetScroll: false,
-          });
-
           this.goto(newSlide);
         }
 
@@ -226,7 +225,10 @@ class Fullpage extends PureComponent {
         debounceScroll: true,
       });
 
-      setTimeout(() => this.setState({ debounceScroll: false }), transitionTiming);
+      setTimeout(() => this.setState({
+        debounceScroll: false,
+        resetScroll:  true,
+      }), 700);
 
 
       const { onShow } = newSlide.props;

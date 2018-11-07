@@ -9,14 +9,14 @@ You shouldn't use this for production unless you really know what you're doing. 
 
 ## Features
 
-- Design for Mobile
-- Nested Component
+- Design for Mobile, Tablet, and Desktop
+- Nested Component (simple to use)
 - Hide safari's header on Scroll on iphone and ipad
 - Hide Google Chrome's header on Scroll on iOS and Android
 - Drived by the scroll
 - CSS animation
 - GPU/CPU swtich
-- Very Small
+- Very Small (tiny)
 - MIT License (no fullpage.js dependency)
 
 

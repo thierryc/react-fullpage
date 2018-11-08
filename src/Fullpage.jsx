@@ -66,7 +66,9 @@ class Fullpage extends PureComponent {
 
   componentDidMount() {
     this.handleResize();
-    this.setState({ slide: this.slides[0] });
+    this.setState({
+      slide: this.slides[0],
+    });
     if (typeof window !== 'undefined') {
       window.addEventListener('scroll', this.handleScroll);
       window.addEventListener('resize', this.handleResize);
@@ -100,7 +102,9 @@ class Fullpage extends PureComponent {
       const bTop = b.el.current.offsetTop;
       return aTop - bTop;
     });
-    this.setState({ count: this.slides.length });
+    this.setState({
+      count: this.slides.length,
+    });
     this.ticking = false;
     this.handleResize();
     return slide;
@@ -108,17 +112,29 @@ class Fullpage extends PureComponent {
 
   unsubscribe(slide) {
     this.slides = this.slides.filter(s => s.el !== slide.el);
-    this.setState({ count: this.slides.length });
+    this.setState({
+      count: this.slides.length,
+    });
     this.handleResize();
     this.handleScroll();
     return slide;
   }
 
   handleScroll() {
+    const {
+      resetScroll,
+      translateY,
+    } = this.state;
+
+
+    if (this.lockScroll) {
+      // if > top and bottom < fix scroll
+      window.scrollTo(0, translateY * -1);
+      return false;
+    }
+
     if (!this.ticking) {
       window.requestAnimationFrame(() => {
-        const { resetScroll, translateY, debounceScroll } = this.state;
-        // resetScroll or prevent scroll for debounceScroll
         if (resetScroll) {
           window.scrollTo(0, translateY * -1);
         }
@@ -129,18 +145,16 @@ class Fullpage extends PureComponent {
           resetScroll: false,
         });
 
-        if (!debounceScroll) {
-          const newSlide = this.slides.find((slide) => {
-            const el = slide.el.current;
-            return pageYOffset < el.offsetTop + (el.offsetHeight * 0.5);
-          });
-          this.goto(newSlide);
-        }
-
+        const newSlide = this.slides.find((slide) => {
+          const el = slide.el.current;
+          return pageYOffset < el.offsetTop + (el.offsetHeight * 0.5);
+        });
+        this.goto(newSlide);
         this.ticking = false;
       });
     }
     this.ticking = true;
+    return true;
   }
 
   handleResize() {
@@ -160,7 +174,9 @@ class Fullpage extends PureComponent {
   }
 
   handleKeys(event) {
-    const { keyboardShortcut } = this.props;
+    const {
+      keyboardShortcut,
+    } = this.props;
     if (!keyboardShortcut) {
       return true;
     }
@@ -203,18 +219,28 @@ class Fullpage extends PureComponent {
   }
 
   goto(newSlide, resetScroll = false) {
-    const { slide } = this.state;
-    const { transitionTiming, onChange } = this.props;
+    const {
+      slide,
+    } = this.state;
+    const {
+      transitionTiming,
+      onChange,
+    } = this.props;
+
     if (slide !== newSlide) {
       const translateY = Math.max(
         (this.fullPageHeight - this.viewportHeight) * -1,
         newSlide.el.current.offsetTop * -1,
       );
 
-      const { onHide } = slide.props;
+      const {
+        onHide,
+      } = slide.props;
       if (onHide && typeof onHide === 'function') {
         setTimeout(() => onHide(translateY), transitionTiming);
       }
+
+      this.lockScroll = true;
 
       this.setState({
         slide: newSlide,
@@ -222,34 +248,40 @@ class Fullpage extends PureComponent {
         translateY,
         offsetHeight: newSlide.el.current.offsetHeight,
         resetScroll,
-        debounceScroll: true,
       });
 
-      setTimeout(() => this.setState({
-        debounceScroll: false,
-        resetScroll:  true,
-      }), 700);
+      setTimeout(() => {
+        this.lockScroll = false;
+      }, 1000);
 
-
-      const { onShow } = newSlide.props;
+      const {
+        onShow,
+      } = newSlide.props;
       if (onShow && typeof onShow === 'function') {
         onShow(translateY);
       }
       // call back function
       onChange(this.state);
     }
+
     return newSlide;
   }
 
   back() {
-    const { number } = this.state;
+    const {
+      number,
+    } = this.state;
     const index = Math.max(0, number - 1);
     this.goto(this.slides[index], true);
   }
 
   next() {
-    const { length } = this.slides;
-    const { number } = this.state;
+    const {
+      length,
+    } = this.slides;
+    const {
+      number,
+    } = this.state;
     const index = Math.min(length - 1, number + 1);
     this.goto(this.slides[index], true);
   }
@@ -271,37 +303,44 @@ class Fullpage extends PureComponent {
     } = this.props;
 
     const {
-      translateY, pageYOffset, offsetHeight, number, count,
+      translateY,
+      pageYOffset,
+      offsetHeight,
+      number,
+      count,
     } = this.state;
 
     return (
-      <FullpageContext.Provider value={{
-        translateY,
-        pageYOffset,
-        offsetHeight,
-        number,
-        count,
-        subscribe: this.subscribe,
-        unsubscribe: this.unsubscribe,
-        update: this.update,
-        goto: slide => this.goto(slide),
-        back: this.back,
-        next: this.next,
-        getIndex: this.getIndex,
-        transitionTiming,
-        className,
-        style,
-        warperRef: this.warperRef,
-        fullpageRef: this.fullpageRef,
-        slides: this.slides,
-      }}
+      <FullpageContext.Provider
+        value={{
+          translateY,
+          pageYOffset,
+          offsetHeight,
+          number,
+          count,
+          subscribe: this.subscribe,
+          unsubscribe: this.unsubscribe,
+          update: this.update,
+          goto: slide => this.goto(slide),
+          back: this.back,
+          next: this.next,
+          getIndex: this.getIndex,
+          transitionTiming,
+          className,
+          style,
+          warperRef: this.warperRef,
+          fullpageRef: this.fullpageRef,
+          slides: this.slides,
+        }}
       >
         <div
           name="Driver"
-          style={{ position: 'relative' }}
+          style={{
+            position: 'relative',
+          }}
           ref={this.driverRef}
         />
-        { children }
+        {children}
       </FullpageContext.Provider>
     );
   }

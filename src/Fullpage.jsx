@@ -67,7 +67,7 @@ class Fullpage extends PureComponent {
   componentDidMount() {
     this.handleResize();
     this.setState({
-      slide: this.slides[0]
+      slide: this.slides[0],
     });
     if (typeof window !== 'undefined') {
       window.addEventListener('scroll', this.handleScroll);
@@ -103,7 +103,7 @@ class Fullpage extends PureComponent {
       return aTop - bTop;
     });
     this.setState({
-      count: this.slides.length
+      count: this.slides.length,
     });
     this.ticking = false;
     this.handleResize();
@@ -113,7 +113,7 @@ class Fullpage extends PureComponent {
   unsubscribe(slide) {
     this.slides = this.slides.filter(s => s.el !== slide.el);
     this.setState({
-      count: this.slides.length
+      count: this.slides.length,
     });
     this.handleResize();
     this.handleScroll();
@@ -121,11 +121,8 @@ class Fullpage extends PureComponent {
   }
 
   handleScroll() {
-
     const {
-      slide,
       resetScroll,
-      scrollPosition,
       translateY,
     } = this.state;
 
@@ -137,9 +134,7 @@ class Fullpage extends PureComponent {
     }
 
     if (!this.ticking) {
-      console.log('not lockScroll');
       window.requestAnimationFrame(() => {
-
         if (resetScroll) {
           window.scrollTo(0, translateY * -1);
         }
@@ -159,6 +154,7 @@ class Fullpage extends PureComponent {
       });
     }
     this.ticking = true;
+    return true;
   }
 
   handleResize() {
@@ -179,7 +175,7 @@ class Fullpage extends PureComponent {
 
   handleKeys(event) {
     const {
-      keyboardShortcut
+      keyboardShortcut,
     } = this.props;
     if (!keyboardShortcut) {
       return true;
@@ -187,20 +183,16 @@ class Fullpage extends PureComponent {
 
     if (
       event.keyCode === 33 // pageUp:    33,
-      ||
-      event.keyCode === 37 // left:      37,
-      ||
-      event.keyCode === 38 // up:        38,
+      || event.keyCode === 37 // left:      37,
+      || event.keyCode === 38 // up:        38,
     ) {
       event.preventDefault();
       return (event.shiftKey) ? this.first(event) : this.back(event);
     }
     if (
       event.keyCode === 34 // pageDown:  34,
-      ||
-      event.keyCode === 39 // right:     39,
-      ||
-      event.keyCode === 40 // down:      40,
+      || event.keyCode === 39 // right:     39,
+      || event.keyCode === 40 // down:      40,
     ) {
       event.preventDefault();
       return (event.shiftKey) ? this.last(event) : this.next(event);
@@ -228,7 +220,7 @@ class Fullpage extends PureComponent {
 
   goto(newSlide, resetScroll = false) {
     const {
-      slide
+      slide,
     } = this.state;
     const {
       transitionTiming,
@@ -242,12 +234,12 @@ class Fullpage extends PureComponent {
       );
 
       const {
-        onHide
+        onHide,
       } = slide.props;
       if (onHide && typeof onHide === 'function') {
         setTimeout(() => onHide(translateY), transitionTiming);
       }
-      console.log('on');
+
       this.lockScroll = true;
 
       this.setState({
@@ -255,16 +247,15 @@ class Fullpage extends PureComponent {
         number: this.getIndex(newSlide),
         translateY,
         offsetHeight: newSlide.el.current.offsetHeight,
-        resetScroll
+        resetScroll,
       });
 
       setTimeout(() => {
-        console.log('off');
         this.lockScroll = false;
-      },1000);
+      }, 1000);
 
       const {
-        onShow
+        onShow,
       } = newSlide.props;
       if (onShow && typeof onShow === 'function') {
         onShow(translateY);
@@ -278,7 +269,7 @@ class Fullpage extends PureComponent {
 
   back() {
     const {
-      number
+      number,
     } = this.state;
     const index = Math.max(0, number - 1);
     this.goto(this.slides[index], true);
@@ -286,10 +277,10 @@ class Fullpage extends PureComponent {
 
   next() {
     const {
-      length
+      length,
     } = this.slides;
     const {
-      number
+      number,
     } = this.state;
     const index = Math.min(length - 1, number + 1);
     this.goto(this.slides[index], true);
@@ -319,9 +310,9 @@ class Fullpage extends PureComponent {
       count,
     } = this.state;
 
-    return ( <
-      FullpageContext.Provider value = {
-        {
+    return (
+      <FullpageContext.Provider
+        value={{
           translateY,
           pageYOffset,
           offsetHeight,
@@ -340,22 +331,17 @@ class Fullpage extends PureComponent {
           warperRef: this.warperRef,
           fullpageRef: this.fullpageRef,
           slides: this.slides,
-        }
-      } >
-      <
-      div name = "Driver"
-      style = {
-        {
-          position: 'relative'
-        }
-      }
-      ref = {
-        this.driverRef
-      }
-      /> {
-        children
-      } <
-      /FullpageContext.Provider>
+        }}
+      >
+        <div
+          name="Driver"
+          style={{
+            position: 'relative',
+          }}
+          ref={this.driverRef}
+        />
+        {children}
+      </FullpageContext.Provider>
     );
   }
 }

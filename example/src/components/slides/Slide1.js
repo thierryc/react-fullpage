@@ -24,7 +24,7 @@ const Slide1 = () => (
         marginTop: '0.3em',
         marginBottom: '0.4em',
       }}>Create Fullscreen Scrolling Websites</h2>
-      <p>Version 0.1.8-alpha</p>
+      <p>Version 0.1.9-alpha</p>
     </div>
   </FullpageSection>
 );

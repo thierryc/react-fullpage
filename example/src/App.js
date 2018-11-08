@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Fullpage, { FullPageSections, FullpageSection, FullpageCount, FullpageNavigation } from '@ap.cx/react-fullpage'
 import "babel-polyfill";
+import 'react-app-polyfill/ie9';
 
 import Slide1 from './components/slides/Slide1';
 import Slide2 from './components/slides/Slide2';

@@ -5,7 +5,7 @@
   "private": true,
   "license": "MIT",
   "dependencies": {
-    "@ap.cx/react-fullpage": "^0.1.8-alpha",
+    "@ap.cx/react-fullpage": "^0.1.9-alpha",
     "babel-polyfill": "^6.26.0",
     "prop-types": "^15.6.2",
     "react": "^16.6.0",

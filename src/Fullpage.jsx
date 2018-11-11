@@ -261,7 +261,9 @@ class Fullpage extends PureComponent {
         onShow(translateY);
       }
       // call back function
-      onChange(this.state);
+      if (typeof onChange === "function") {
+        onChange(this.state);
+      }
     }
 
     return newSlide;

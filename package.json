@@ -1,6 +1,6 @@
 {
   "name": "@ap.cx/react-fullpage",
-  "version": "0.1.9-alpha",
+  "version": "0.1.10-alpha",
   "description": "Create Beautiful Fullscreen Scrolling Websites",
   "author": "thierryc",
   "license": "MIT",
@@ -9,16 +9,18 @@
   "module": "dist/index.es.js",
   "jsnext:main": "dist/index.es.js",
   "scripts": {
-    "test": "cross-env CI=1 react-scripts test --env=jsdom",
-    "test:watch": "react-scripts test --env=jsdom",
     "build": "rollup -c",
     "start": "rollup -c -m -w",
     "prepare": "npm run build",
     "lint": "node_modules/eslint/bin/eslint.js 'src/**/*' --fix",
-    "predeploy": "cd gh-pages && npm install && npm run build",
+    "predeploy": "cd gh-pages && git pull && npm install && npm run build",
     "deploy": "gh-pages -d gh-pages/build"
   },
-  "dependencies": {},
+  "dependencies": {
+    "prop-types": "^15.5.4",
+    "react": "^16.6.0",
+    "react-dom": "^16.6.0"
+  },
   "peerDependencies": {
     "prop-types": "^15.5.4",
     "react": "^16.6.0",
@@ -46,8 +48,6 @@
     "postcss-cssnext": "^3.1.0",
     "postcss-nested": "^4.1.0",
     "postcss-preset-env": "^6.4.0",
-    "react": "^16.6.0",
-    "react-dom": "^16.6.0",
     "rollup": "^0.62.0",
     "rollup-plugin-babel": "^3.0.3",
     "rollup-plugin-commonjs": "^9.2.0",

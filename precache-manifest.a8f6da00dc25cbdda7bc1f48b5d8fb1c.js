@@ -12,15 +12,15 @@ self.__precacheManifest = [
     "url": "/react-fullpage/static/js/main.f4333452.chunk.js"
   },
   {
-    "revision": "99d7a8dc9890c552462c",
-    "url": "/react-fullpage/static/js/1.99d7a8dc.chunk.js"
+    "revision": "c97481bd6559d2f50fc4",
+    "url": "/react-fullpage/static/js/1.c97481bd.chunk.js"
   },
   {
     "revision": "f4333452ba3817bebf7c",
     "url": "/react-fullpage/static/css/main.4dfe9d09.chunk.css"
   },
   {
-    "revision": "aff50fe94b547133be4ebd277411d208",
+    "revision": "cff966b25e70e13d38d2a75c6db138b2",
     "url": "/react-fullpage/index.html"
   }
 ];

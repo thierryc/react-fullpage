@@ -15,8 +15,8 @@
     "start": "rollup -c -m -w",
     "prepare": "npm run build",
     "lint": "node_modules/eslint/bin/eslint.js 'src/**/*' --fix",
-    "predeploy": "cd example && npm install && npm run build",
-    "deploy": "gh-pages -d example/build"
+    "predeploy": "cd gh-pages && npm install && npm run build",
+    "deploy": "gh-pages -d gh-pages/build"
   },
   "dependencies": {},
   "peerDependencies": {

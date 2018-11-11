@@ -17,7 +17,7 @@ You shouldn't use this for production unless you really know what you're doing. 
 - Drived by the scroll
 - CSS animation
 - GPU/CPU swtich
-- Very Small (tiny)
+- Very Small ( ~ 25kB )
 - MIT License (no fullpage.js dependency)
 
 

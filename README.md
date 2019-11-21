@@ -2,7 +2,11 @@
 
 https://thierryc.github.io/react-fullpage/
 
-- 0.1.9-alpha Alpha Version. **Not for production**.
+another demo:
+
+https://thierryc.github.io/react-fullpage-example/
+
+- 0.1.10-alpha Alpha Version. **Not for production**.
 - WARNING 0.1.7-alph and 0.1.8-alpha are 2 experimentals Alpha Version. **Not for production**.
 
 This project is still in a very **early stage**.

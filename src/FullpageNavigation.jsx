@@ -9,8 +9,6 @@ import FullpageContext from './FullpageContext';
 // TODO: do navigation
 // eslint-disable-next-line react/prefer-stateless-function
 class FullpageNavigation extends PureComponent {
-  static contextType = FullpageContext;
-
   static propTypes = {
     style: PropTypes.objectOf(PropTypes.oneOfType([
       PropTypes.number,
@@ -30,6 +28,8 @@ class FullpageNavigation extends PureComponent {
     itemStyle: {},
     reverse: false,
   };
+
+  static contextType = FullpageContext;
 
   render() {
     const { style, itemStyle, reverse = false } = this.props;
@@ -62,25 +62,31 @@ class FullpageNavigation extends PureComponent {
           slides.map((slide, i) => (
             <div
               key={i.toString()}
-              style={{
-                borderRadius: '50%',
-                height: (number === i) ? 14 : 10,
-                width: (number === i) ? 14 : 10,
-                margin: (number === i) ? 3 : 5,
-                backgroundColor: (reverse) ? 'white' : 'black',
-                opacity: (number === i) ? 1 : 0.5,
-                transition: `all ${transitionTiming * 0.5}ms ease-in-out`,
-                ...itemStyle,
-              }}
-              onClick={() => gotoSlide(slide)}
-              aria-label={`Slide ${i}`}
             >
-              <span style={{
-                display: 'none',
-              }}
+              <div
+                style={{
+                  borderRadius: '50%',
+                  height: (number === i) ? 14 : 10,
+                  width: (number === i) ? 14 : 10,
+                  margin: (number === i) ? 3 : 5,
+                  backgroundColor: (reverse) ? 'white' : 'black',
+                  opacity: (number === i) ? 1 : 0.5,
+                  transition: `all ${transitionTiming * 0.5}ms ease-in-out`,
+                  ...itemStyle,
+                }}
+                onClick={() => gotoSlide(slide)}
+                onKeyPress={() => gotoSlide(slide)}
+                role="button"
+                tabIndex="0"
+                aria-label={`Slide ${i}`}
               >
-                {`${i}`}
-              </span>
+                <span style={{
+                  display: 'none',
+                }}
+                >
+                  {`${i}`}
+                </span>
+              </div>
             </div>
           ))
         }

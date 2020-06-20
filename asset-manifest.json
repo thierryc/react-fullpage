@@ -1,14 +1,23 @@
 {
-  "main.css": "/react-fullpage/static/css/main.4dfe9d09.chunk.css",
-  "main.js": "/react-fullpage/static/js/main.f4333452.chunk.js",
-  "main.js.map": "/react-fullpage/static/js/main.f4333452.chunk.js.map",
-  "static/js/1.c97481bd.chunk.js": "/react-fullpage/static/js/1.c97481bd.chunk.js",
-  "static/js/1.c97481bd.chunk.js.map": "/react-fullpage/static/js/1.c97481bd.chunk.js.map",
-  "runtime~main.js": "/react-fullpage/static/js/runtime~main.f1d5bd03.js",
-  "runtime~main.js.map": "/react-fullpage/static/js/runtime~main.f1d5bd03.js.map",
-  "static/media/logo.svg": "/react-fullpage/static/media/logo.5d5d9eef.svg",
-  "static/css/main.4dfe9d09.chunk.css.map": "/react-fullpage/static/css/main.4dfe9d09.chunk.css.map",
-  "index.html": "/react-fullpage/index.html",
-  "precache-manifest.a8f6da00dc25cbdda7bc1f48b5d8fb1c.js": "/react-fullpage/precache-manifest.a8f6da00dc25cbdda7bc1f48b5d8fb1c.js",
-  "service-worker.js": "/react-fullpage/service-worker.js"
+  "files": {
+    "main.css": "/react-fullpage/static/css/main.25ac248d.chunk.css",
+    "main.js": "/react-fullpage/static/js/main.fc9bbb39.chunk.js",
+    "main.js.map": "/react-fullpage/static/js/main.fc9bbb39.chunk.js.map",
+    "runtime-main.js": "/react-fullpage/static/js/runtime-main.2a0ce687.js",
+    "runtime-main.js.map": "/react-fullpage/static/js/runtime-main.2a0ce687.js.map",
+    "static/js/2.596854ac.chunk.js": "/react-fullpage/static/js/2.596854ac.chunk.js",
+    "static/js/2.596854ac.chunk.js.map": "/react-fullpage/static/js/2.596854ac.chunk.js.map",
+    "index.html": "/react-fullpage/index.html",
+    "precache-manifest.764ef337db19620c1d6e74aff1da7c7d.js": "/react-fullpage/precache-manifest.764ef337db19620c1d6e74aff1da7c7d.js",
+    "service-worker.js": "/react-fullpage/service-worker.js",
+    "static/css/main.25ac248d.chunk.css.map": "/react-fullpage/static/css/main.25ac248d.chunk.css.map",
+    "static/js/2.596854ac.chunk.js.LICENSE.txt": "/react-fullpage/static/js/2.596854ac.chunk.js.LICENSE.txt",
+    "static/media/logo.svg": "/react-fullpage/static/media/logo.5d5d9eef.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.2a0ce687.js",
+    "static/js/2.596854ac.chunk.js",
+    "static/css/main.25ac248d.chunk.css",
+    "static/js/main.fc9bbb39.chunk.js"
+  ]
 }

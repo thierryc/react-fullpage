@@ -1,3 +1,4 @@
+/* eslint-disable react/static-property-placement */
 /**
  * @class FullpageSection
  */
@@ -9,6 +10,14 @@ const FullpageSectionContext = React.createContext();
 
 class FullpageSection extends PureComponent {
   static contextType = FullpageContext;
+  
+  static defaultProps = {
+    height: '100vh',
+    style: {},
+    className: '',
+    onShow: null, // eslint-disable-line no-unused-vars
+    onHide: null, // eslint-disable-line no-unused-vars
+  };
 
   static propTypes = {
     children: PropTypes.node.isRequired,
@@ -23,13 +32,7 @@ class FullpageSection extends PureComponent {
     onHide: PropTypes.func, // eslint-disable-line react/no-unused-prop-types
   };
 
-  static defaultProps = {
-    height: '100vh',
-    style: {},
-    className: '',
-    onShow: null, // eslint-disable-line no-unused-vars
-    onHide: null, // eslint-disable-line no-unused-vars
-  };
+  
 
   static Number = ({ style = {} }) => (
     <FullpageSectionContext.Consumer>

@@ -5,6 +5,7 @@ import React, { PureComponent } from 'react';
 import FullpageContext from './FullpageContext';
 
 class FullpageNumber extends PureComponent {
+  // eslint-disable-next-line react/static-property-placement
   static contextType = FullpageContext;
 
   render() {
@@ -12,7 +13,7 @@ class FullpageNumber extends PureComponent {
     return (
       <FullpageContext.Consumer>
         {
-          ctx => <span>{`${ctx.number + 1}`}</span>
+          (ctx) => <span>{`${ctx.number + 1}`}</span>
         }
       </FullpageContext.Consumer>
     );

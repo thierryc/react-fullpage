@@ -1,13 +1,19 @@
 {
   "presets": [
+    "@babel/env", 
     ["airbnb", {
       "modules": false
     }],
-    "stage-0",
-    "react"
+    "@babel/react"
   ],
   "plugins": [
-    "transform-decorators-legacy",
-    "external-helpers"
+    [
+      "@babel/plugin-proposal-decorators",
+      {
+        "legacy": true
+      }
+    ],
+    "@babel/plugin-external-helpers",
+    "@babel/plugin-proposal-class-properties"
   ]
 }

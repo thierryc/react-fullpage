@@ -1,3 +1,4 @@
+/* eslint-disable react/static-property-placement */
 /**
  * @class FullpageNavigation
  */
@@ -9,6 +10,14 @@ import FullpageContext from './FullpageContext';
 // TODO: do navigation
 // eslint-disable-next-line react/prefer-stateless-function
 class FullpageNavigation extends PureComponent {
+  static contextType = FullpageContext;
+
+  static defaultProps = {
+    style: {},
+    itemStyle: {},
+    reverse: false,
+  };
+
   static propTypes = {
     style: PropTypes.objectOf(PropTypes.oneOfType([
       PropTypes.number,
@@ -22,14 +31,6 @@ class FullpageNavigation extends PureComponent {
     ])),
     reverse: PropTypes.bool,
   };
-
-  static defaultProps = {
-    style: {},
-    itemStyle: {},
-    reverse: false,
-  };
-
-  static contextType = FullpageContext;
 
   render() {
     const { style, itemStyle, reverse = false } = this.props;
@@ -77,14 +78,14 @@ class FullpageNavigation extends PureComponent {
                 onClick={() => gotoSlide(slide)}
                 onKeyPress={() => gotoSlide(slide)}
                 role="button"
-                tabIndex="0"
+                tabIndex="-1"
                 aria-label={`Slide ${i}`}
               >
                 <span style={{
                   display: 'none',
                 }}
                 >
-                  {`${i}`}
+                  {`slide number ${i}`}
                 </span>
               </div>
             </div>

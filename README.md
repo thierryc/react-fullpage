@@ -6,9 +6,6 @@ another demo:
 
 https://thierryc.github.io/react-fullpage-example/
 
-- 0.1.10-alpha Alpha Version. **Not for production**.
-- WARNING 0.1.7-alph and 0.1.8-alpha are 2 experimentals Alpha Version. **Not for production**.
-
 This project is still in a very **early stage**.
 You shouldn't use this for production unless you really know what you're doing. 🖖
 
@@ -23,7 +20,6 @@ You shouldn't use this for production unless you really know what you're doing. 
 - GPU/CPU swtich
 - Very Small ( ~ 25kB )
 - MIT License (no fullpage.js dependency)
-
 
 > Create Fullscreen Scrolling Websites
 

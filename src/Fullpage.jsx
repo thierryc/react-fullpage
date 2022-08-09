@@ -310,6 +310,7 @@ class Fullpage extends PureComponent {
       offsetHeight,
       number,
       count,
+      resetScroll,
     } = this.state;
 
     return (
@@ -323,7 +324,7 @@ class Fullpage extends PureComponent {
           subscribe: this.subscribe,
           unsubscribe: this.unsubscribe,
           update: this.update,
-          goto: slide => this.goto(slide),
+          goto: slide => this.goto(slide, resetScroll),
           back: this.back,
           next: this.next,
           getIndex: this.getIndex,

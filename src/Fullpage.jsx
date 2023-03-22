@@ -136,9 +136,10 @@ class Fullpage extends PureComponent {
       return false;
     }
 
+  if (slide)
     if (slide &&
       (window.pageYOffset >= slide.el.current.offsetTop) &&
-      ((window.pageYOffset <= offsetHeight - this.viewportHeight)
+      ((window.pageYOffset <= slide.el.current.offsetTop + offsetHeight - this.viewportHeight)
       || (slide === this.slides[this.slides.length - 1]))
     ) {
       this.setState({

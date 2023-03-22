@@ -45,6 +45,7 @@ class Fullpage extends PureComponent {
       count: 0,
       number: 0,
       resetScroll: false,
+      transitionTiming: props.transitionTiming,
     };
     this.ticking = false;
     this.fullPageHeight = 0;
@@ -124,6 +125,8 @@ class Fullpage extends PureComponent {
     const {
       resetScroll,
       translateY,
+      slide,
+      offsetHeight,
     } = this.state;
 
 
@@ -131,6 +134,18 @@ class Fullpage extends PureComponent {
       // if > top and bottom < fix scroll
       window.scrollTo(0, translateY * -1);
       return false;
+    }
+
+    if (slide &&
+      (window.pageYOffset >= slide.el.current.offsetTop) &&
+      ((window.pageYOffset <= offsetHeight - this.viewportHeight)
+      || (slide === this.slides[this.slides.length - 1]))
+    ) {
+      this.setState({
+        translateY: -window.pageYOffset,
+        transitionTiming: 0,
+      });
+      return true;
     }
 
     if (!this.ticking) {
@@ -141,6 +156,7 @@ class Fullpage extends PureComponent {
 
         const pageYOffset = window.pageYOffset || 0;
         this.setState({
+          transitionTiming: this.props.transitionTiming,
           pageYOffset,
           resetScroll: false,
         });
@@ -153,6 +169,7 @@ class Fullpage extends PureComponent {
         this.ticking = false;
       });
     }
+
     this.ticking = true;
     return true;
   }
@@ -221,13 +238,13 @@ class Fullpage extends PureComponent {
   goto(newSlide, resetScroll = false) {
     const {
       slide,
+      transitionTiming,
     } = this.state;
     const {
-      transitionTiming,
       onChange,
     } = this.props;
 
-    if (slide !== newSlide) {
+    if (slide !== newSlide && newSlide) {
       const translateY = Math.max(
         (this.fullPageHeight - this.viewportHeight) * -1,
         newSlide.el.current.offsetTop * -1,
@@ -301,7 +318,6 @@ class Fullpage extends PureComponent {
       children,
       style,
       className,
-      transitionTiming,
     } = this.props;
 
     const {
@@ -311,6 +327,7 @@ class Fullpage extends PureComponent {
       number,
       count,
       resetScroll,
+      transitionTiming,
     } = this.state;
 
     return (

@@ -1,0 +1,70 @@
+{
+  // @see https://www.typescriptlang.org/tsconfig
+  // @see https://www.typescriptlang.org/docs/handbook/project-references.html
+  // @see https://www.typescriptlang.org/docs/handbook/configuring-watch.html
+  // when conflicted, follow https://bun.sh/docs/ecosystem/typescript#compiler-options
+
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "watchOptions": {
+    "excludeDirectories": [
+      "**/node_modules",
+      "**/.git",
+      "**/build",
+      "**/.turbo",
+      "**/dist",
+      "**/lib"
+    ]
+  },
+  "exclude": [
+    "**/node_modules",
+    "**/.git",
+    "**/build",
+    "**/.turbo",
+    "**/dist",
+    "**/lib"
+  ],
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "assumeChangesOnlyAffectDirectDependencies": true,
+    "baseUrl": ".",
+    "checkJs": false, // throws too many errors in third party shit
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "downlevelIteration": true,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "incremental": true,
+    "isolatedModules": false,
+    "jsx": "react-jsx",
+    "lib": ["ESNext"],
+    "module": "esnext",
+    "moduleDetection": "force",
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "noErrorTruncation": false,
+    "noFallthroughCasesInSwitch": false,
+    "noImplicitAny": false, // never set this to false
+    "noImplicitThis": true,
+    "preserveConstEnums": true,
+    "preserveSymlinks": false, // if true breaks A extends B, A will have no properties of B
+    "pretty": false,
+    "removeComments": false,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "strictFunctionTypes": true,
+    "strictNullChecks": false,
+    "target": "esnext",
+    "types": ["bun-types"],
+    "useUnknownInCatchVariables": true
+    // "importsNotUsedAsValues": "error",
+    // "noUnusedLocals": false,
+    // "preserveValueImports": true,
+  }
+}

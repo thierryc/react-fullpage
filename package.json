@@ -1,22 +1,17 @@
 {
-  "name": "react-fullpage-partial-scroll",
+  "name": "react-fullerpage",
   "version": "0.1.1",
-  "description": "Fullscreen scroll & partialy applicable & scrollable when tall",
-  "author": "thierryc",
+  "description": "fork of react-fullpage, for a fuller page",
+  "author": "forked from thierryc",
   "license": "MIT",
-  "repository": "jin60641/react-fullpage",
   "main": "dist/index.js",
-  "module": "dist/index.es.js",
-  "jsnext:main": "dist/index.es.js",
+  "module": "src/index.tsx",
   "scripts": {
-    "upgrade:deps": "bunx ncu -u && bun install",
+    "barrels": "barrelsby --config ./barrels.json",
     "build": "rm -rf ./dist/* && bun build src/index.tsx --outdir ./dist",
     "lint": "bunx eslint src -- --fix",
-    "pretty": "bunx prettier --write 'src/**/*.(ts|tsx)'"
-  },
-  "peerDependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "pretty": "bunx prettier --write 'src/**/*.(ts|tsx)'",
+    "upgrade:deps": "bunx ncu -u && bun install"
   },
   "devDependencies": {
     "@types/react": "18.2.6",
@@ -24,6 +19,7 @@
     "@types/react-router-dom": "5.3.3",
     "@typescript-eslint/eslint-plugin": "5.59.7",
     "@typescript-eslint/parser": "5.59.7",
+    "barrels": "^1.6.6",
     "bun-types": "0.6.3",
     "eslint": "8.41.0",
     "eslint-config-prettier": "8.8.0",
@@ -31,9 +27,7 @@
     "eslint-plugin-react": "^7.32.2",
     "gh-pages": "^5.0.0",
     "npm-check-updates": "^16.10.12",
-    "prettier": "^2.8.8",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "prettier": "^2.8.8"
   },
   "files": [
     "dist"

@@ -1,18 +1,18 @@
-import { useContext, useMemo, type CSSProperties } from "react";
+import { useContext, useMemo, type CSSProperties, type FC } from "react";
 
-import FullpageContext from "./FullpageContext";
+import {FPContext} from "./FPContext";
 
-export interface FullpageNavigationInterface {
+export interface FPNavInterface {
   style?: CSSProperties;
   itemStyle?: CSSProperties;
   reverse?: boolean;
 }
 // TODO: do navigation
-export default function FullpageNavigation({
+export const FPNav: FC<FPNavInterface> = ({
   style = {},
   itemStyle = {},
   reverse = false,
-}: FullpageNavigationInterface): JSX.Element {
+}) => {
   const useStyle = useMemo(
     () => ({
       position: "fixed" as const,
@@ -32,7 +32,7 @@ export default function FullpageNavigation({
   );
 
   const { slideIndex, slides, transitionTiming, goto } =
-    useContext(FullpageContext);
+    useContext(FPContext);
 
   const useItemStyle = useMemo(
     () => ({

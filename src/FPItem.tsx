@@ -5,13 +5,14 @@ import {
   useEffect,
   type CSSProperties,
   type ReactNode,
+  type FC,
 } from "react";
 
-import FullpageContext from "./FullpageContext";
+import {FPContext} from "./FPContext";
 
-export const FullpageSectionContext = createContext(null);
+export const FPItemContext = createContext(null);
 
-export interface FullpageSectionInterface {
+export interface FPItemInterface {
   children: ReactNode;
   //
   height?: string;
@@ -20,7 +21,7 @@ export interface FullpageSectionInterface {
   onShow?: Function;
   onHide?: Function;
 }
-export default function FullpageSection({
+export const FPItem: FC<FPItemInterface> = ({
   children,
   //
   className = "",
@@ -28,33 +29,33 @@ export default function FullpageSection({
   onHide,
   onShow,
   style = {},
-}: FullpageSectionInterface): JSX.Element {
-  const { subscribe, unsubscribe, getIndex } = useContext(FullpageContext);
-  const sectionRef = useRef(null);
+}) => {
+  const { subscribe, unsubscribe, getIndex } = useContext(FPContext);
+  const FPItemRef = useRef(null);
 
   useEffect(() => {
-    subscribe(sectionRef);
+    subscribe(FPItemRef);
 
     return () => {
-      unsubscribe(sectionRef);
+      unsubscribe(FPItemRef);
     };
   }, []);
   return (
-    <FullpageSectionContext.Provider
+    <FPItemContext.Provider
       value={{
-        index: getIndex(sectionRef),
+        index: getIndex(FPItemRef),
       }}
     >
-      <section
+      <div
         className={className}
         style={{
           height,
           ...style,
         }}
-        ref={sectionRef}
+        ref={FPItemRef}
       >
         {children}
-      </section>
-    </FullpageSectionContext.Provider>
+      </div>
+    </FPItemContext.Provider>
   );
 }

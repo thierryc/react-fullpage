@@ -8,23 +8,24 @@ import {
   type KeyboardEvent,
   type ReactNode,
   type ReactElement,
+  type FC,
 } from "react";
 
-import FullpageContext from "./FullpageContext";
+import {FPContext} from "./FPContext";
 
-export interface FullpageSectionInterface {
+export interface FPContainerInterface {
   children: ReactNode;
   //
   className?: string;
   style?: CSSProperties;
 }
-export default function FullpageSection({
+export const FullpageSection: FC<FPContainerInterface> = ({
   children,
   className = "",
   style = {},
-}: FullpageSectionInterface): ReactElement {
-  const { pageStyle, warperRef, transitionTiming, translateY, fullpageRef } =
-    useContext(FullpageContext);
+}) => {
+  const { pageStyle, FPContainerOuterRef, transitionTiming, translateY, FPContainerInnerRef } =
+    useContext(FPContext);
 
   const useStyle = useMemo(
     () => ({
@@ -37,10 +38,9 @@ export default function FullpageSection({
   );
 
   return (
-    <article name="Warper" style={pageStyle} ref={warperRef}>
-      <section
-        ref={fullpageRef}
-        name="Inner"
+    <div style={pageStyle} ref={FPContainerOuterRef}>
+      <div
+        ref={FPContainerInnerRef}
         className={className}
         style={{
           transition: `transform ${transitionTiming}ms cubic-bezier(0.645, 0.045, 0.355, 1.000)`,
@@ -49,7 +49,7 @@ export default function FullpageSection({
         }}
       >
         {children}
-      </section>
-    </article>
+      </div>
+    </div>
   );
 }

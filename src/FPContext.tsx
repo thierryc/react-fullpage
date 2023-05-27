@@ -4,9 +4,9 @@ const voidFn = (el?) => void 0;
 const getIndex = (el: any) => 0;
 const observeFn = (el) => el;
 
-export default createContext({
+export const FPContext = createContext({
   back: voidFn,
-  fullpageRef: null,
+  FPContainerInnerRef: null,
   getIndex,
   goto: voidFn,
   next: voidFn,
@@ -19,5 +19,5 @@ export default createContext({
   transitionTiming: 700,
   translateY: 0,
   unsubscribe: observeFn,
-  warperRef: null,
+  FPContainerOuterRef: null,
 });

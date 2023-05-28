@@ -8,7 +8,7 @@ import {
   type FC,
 } from "react";
 
-import {FPContext} from "./FPContext";
+import { FPContext } from "./FPContext";
 
 export const FPItemContext = createContext(null);
 
@@ -58,4 +58,4 @@ export const FPItem: FC<FPItemInterface> = ({
       </div>
     </FPItemContext.Provider>
   );
-}
+};

@@ -1,6 +1,6 @@
 import { useContext, useMemo, type CSSProperties, type FC } from "react";
 
-import {FPContext} from "./FPContext";
+import { FPContext } from "./FPContext";
 
 export interface FPNavInterface {
   style?: CSSProperties;
@@ -31,8 +31,7 @@ export const FPNav: FC<FPNavInterface> = ({
     [style]
   );
 
-  const { slideIndex, slides, transitionTiming, goto } =
-    useContext(FPContext);
+  const { slideIndex, slides, transitionTiming, goto } = useContext(FPContext);
 
   const useItemStyle = useMemo(
     () => ({
@@ -75,4 +74,4 @@ export const FPNav: FC<FPNavInterface> = ({
       ))}
     </div>
   );
-}
+};

@@ -1,26 +1,14 @@
-# noahehall/react-fullerpage
+# react-fullerpage
 
-typescript first
-
-## Features
-
-- Design for Mobile, Tablet, and Desktop
-- Nested Component (simple to use)
-- Hide safari's header on Scroll on iphone and ipad
-- Hide Google Chrome's header on Scroll on iOS and Android
-- Drived by the scroll
-- CSS animation
-- GPU/CPU swtich
-- Very Small ( ~ 25kB )
-- MIT License (no fullpage.js dependency)
-
-> Create Fullscreen Scrolling Websites
+- typescript first
+- original work by [thierryc](https://github.com/thierryc)
 
 ## Install
 
 ```bash
-bun add react-fullerpage
+bun add git@github.com:noahehall/react-fullerpage.git
 ```
+
 ## Usage
 
 ```jsx

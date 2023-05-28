@@ -5,7 +5,7 @@
   "author": "forked from thierryc",
   "license": "MIT",
   "main": "dist/index.js",
-  "module": "src/index.tsx",
+  "module": "src/index.ts",
   "scripts": {
     "barrels": "barrelsby --config ./barrels.json",
     "build": "rm -rf ./dist/* && bun build src/index.tsx --outdir ./dist",

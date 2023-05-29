@@ -13,9 +13,7 @@ import {
 
 import { FPContext, type FPItemRef } from ".";
 
-let throttled,
-  ticking,
-  lockScroll = false;
+const isSsr = typeof window === "undefined" || typeof document === "undefined";
 
 export interface FPContainerInterface {
   children: ReactNode;
@@ -41,6 +39,10 @@ export const FPContainer: FC<FPContainerInterface> = ({
   outerStyle = {},
   transitionTiming = 700,
 }) => {
+  const throttled = useRef(false);
+  const ticking = useRef(false);
+  const scrollY = useRef(isSsr ? 0 : window.scrollY);
+
   const useOuterStyle = useMemo(
     () => ({
       left: 0,
@@ -66,12 +68,9 @@ export const FPContainer: FC<FPContainerInterface> = ({
 
   const { ReactFPRef, slides, getIndex } = useContext(FPContext);
 
-  const [slide, setSlide] = useState<FPItemRef>(null);
-
   const [pageState, setPageState] = useState({
     fullpageHeight: 0,
     offsetHeight: 0,
-    scrollY: 0,
     resetScroll: false,
     slideIndex: 0,
     transitionTiming,
@@ -79,65 +78,44 @@ export const FPContainer: FC<FPContainerInterface> = ({
     viewportHeight: 0,
   });
 
-  const handleScroll = () => {
-    if (throttled) return;
-    throttled = true;
+  // @see https://developer.mozilla.org/en-US/docs/Web/API/Document/scroll_event
+  const handleScroll = (e: UIEvent) => {
+    if (throttled.current || isSsr) return;
+    throttled.current = true;
 
-    // scroll first, then throttle
+    e.stopPropagation();
+
+    // scroll first, then enable throttling
     setTimeout(() => {
-      throttled = false;
-    }, 200);
+      throttled.current = false;
+    }, transitionTiming);
 
-    console.info("\n\n\n handle scroll", slide, pageState);
-    const { resetScroll, translateY, offsetHeight, viewportHeight } = pageState;
-
-    if (lockScroll) {
-      // if > top and bottom < fix scroll
-      window.scrollTo(0, translateY * -1);
-    } else if (
-      slide?.current &&
-      window.scrollY >= slide.current.offsetTop &&
-      (window.scrollY <=
-        slide.current.offsetTop + offsetHeight - viewportHeight ||
-        slide === slides[slides.length - 1])
-    ) {
-      setPageState({
-        ...pageState,
-        translateY: -window.scrollY,
-        transitionTiming: 0,
-      });
-    }
-    // @see https://developer.mozilla.org/en-US/docs/Web/API/Document/scroll_event
-    if (!ticking) {
+    if (!ticking.current) {
       window.requestAnimationFrame(() => {
-        if (resetScroll) {
-          window.scrollTo(0, translateY * -1);
-        }
+        const newScrollY = window.scrollY;
+        const prevScrollY = scrollY.current;
 
-        const scrollY = window.scrollY || 0;
+        if (prevScrollY < newScrollY) forward();
+        else if (prevScrollY > newScrollY) back();
 
-        setPageState({
-          ...pageState,
-          scrollY,
-          resetScroll: false,
-          transitionTiming,
-        });
+        if (
+          pageState.resetScroll ||
+          transitionTiming !== pageState.transitionTiming
+        )
+          setPageState((prevState) => ({
+            ...prevState,
+            resetScroll: false,
+            transitionTiming,
+          }));
 
-        goto(
-          slides.find((slide) => {
-            const el = slide.current;
-
-            return scrollY < el.offsetTop + el.offsetHeight * 0.5;
-          })
-        );
-        ticking = false;
+        ticking.current = false;
       });
-      ticking = true;
+      ticking.current = true;
     }
   };
 
   const handleResize = () => {
-    if (!FPContainerInnerRef.current) return;
+    if (!FPContainerInnerRef.current || isSsr) return;
 
     const curHeight = Math.max(
       document.documentElement.clientHeight,
@@ -151,10 +129,9 @@ export const FPContainer: FC<FPContainerInterface> = ({
     )
       return;
 
-    console.info("\n\n\n handle resize", FPContainerInnerRef, ticking);
-    if (!ticking) {
+    if (!ticking.current) {
       console.info("\n\n handle resize: requesting animation frame");
-      window.requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
         const fullpageHeight = FPContainerInnerRef.current!.clientHeight;
         // update count
         setPageState((prevState) => ({
@@ -166,9 +143,9 @@ export const FPContainer: FC<FPContainerInterface> = ({
           ),
         }));
         ReactFPRef.current!.style.height = `${fullpageHeight}px`;
-        ticking = false;
+        ticking.current = false;
       });
-      ticking = true;
+      ticking.current = true;
     }
   };
 
@@ -179,74 +156,72 @@ export const FPContainer: FC<FPContainerInterface> = ({
       case "PageDown":
       case "ArrowRight":
       case "ArrowDown": {
-        event.preventDefault();
         event.stopPropagation();
-        return next();
+        return forward();
       }
       case "PageUp":
       case "ArrowLeft":
       case "ArrowUp": {
-        event.preventDefault();
         event.stopPropagation();
         return back();
       }
       case "End": {
-        event.preventDefault();
         event.stopPropagation();
         return last();
       }
       case "Home": {
-        event.preventDefault();
         event.stopPropagation();
         return first();
       }
     }
   };
 
-  const goto = (newSlide, resetScroll = false) => {
+  const goto = (slideIndex: number, resetScroll = false) => {
+    if (!slides[slideIndex] || pageState.slideIndex === slideIndex || isSsr)
+      return;
+
     const { transitionTiming, fullpageHeight, viewportHeight } = pageState;
 
-    if (slide != newSlide) {
-      const translateY = Math.max(
-        (fullpageHeight - viewportHeight) * -1,
-        newSlide.current.offsetTop * -1
-      );
+    const newSlide = slides[slideIndex];
 
-      // TODO(noah): no clue what the original author meant
-      if (typeof onHide === "function") {
-        setTimeout(() => onHide(translateY, transitionTiming));
-      }
+    const translateY = Math.max(
+      (fullpageHeight - viewportHeight) * -1,
+      newSlide.current.offsetTop * -1
+    );
 
-      lockScroll = true;
+    // TODO(noah): no clue what the original author meant
+    if (typeof onHide === "function") {
+      setTimeout(() => onHide(translateY, transitionTiming));
+    }
 
-      const newPageState = {
-        slideIndex: getIndex(newSlide),
-        translateY,
-        offsetHeight: newSlide.current.offsetHeight,
-        resetScroll,
-      };
-      setPageState((prevState) => ({ ...prevState, ...newPageState }));
-      setSlide(newSlide);
+    throttled.current = true;
 
-      setTimeout(() => {
-        lockScroll = false;
-      }, transitionTiming);
+    const newPageState = {
+      offsetHeight: newSlide.current.offsetHeight,
+      resetScroll,
+      slideIndex,
+      translateY,
+    };
+    setPageState((prevState) => ({ ...prevState, ...newPageState }));
 
-      // TODO(noah): no clue what the original author meant
-      if (typeof onShow === "function") {
-        onShow(newPageState);
-      }
-      // TODO(noah): no clue what the original author meant
-      if (typeof onChange === "function") {
-        onChange({ ...newPageState, slide, slides });
-      }
+    setTimeout(() => {
+      throttled.current = false;
+      scrollY.current = window.scrollY;
+    }, transitionTiming);
+    // TODO(noah): no clue what the original author meant
+    if (typeof onShow === "function") {
+      onShow(newPageState);
+    }
+    // TODO(noah): no clue what the original author meant
+    if (typeof onChange === "function") {
+      onChange({ ...newPageState, slideIndex, slides });
     }
   };
 
   const last = () => {
     if (slides.length <= 1) return;
 
-    goto(slides[slides.length - 1], true);
+    goto(slides.length - 1, true);
   };
 
   const back = () => {
@@ -256,49 +231,42 @@ export const FPContainer: FC<FPContainerInterface> = ({
       case 0:
         return last();
       default:
-        return goto(slides[pageState.slideIndex - 1], true);
+        return goto(pageState.slideIndex - 1, true);
     }
   };
 
   const first = () => {
     if (slides.length <= 1) return;
 
-    goto(slides[0], true);
+    goto(0, true);
   };
 
-  const next = () => {
+  const forward = () => {
     if (slides.length <= 1) return;
 
     switch (pageState.slideIndex) {
       case slides.length - 1:
         return first();
       default:
-        return goto(slides[pageState.slideIndex + 1], true);
+        return goto(pageState.slideIndex + 1, true);
     }
   };
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.addEventListener("scroll", handleScroll);
-      window.addEventListener("resize", handleResize);
-    }
-    if (typeof document !== "undefined") {
-      document.addEventListener("keydown", handleKeys);
-    }
+    if (isSsr) return;
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleResize, { passive: true });
+    document.addEventListener("keydown", handleKeys, { passive: true });
 
     return () => {
-      if (typeof window !== "undefined") {
-        window.removeEventListener("scroll", handleScroll);
-        window.removeEventListener("resize", handleResize);
-      }
-      if (typeof document !== "undefined") {
-        document.removeEventListener("keydown", handleKeys);
-      }
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
+      document.removeEventListener("keydown", handleKeys);
     };
   });
 
   useEffect(() => {
-    if (slides.length && !slide) goto(slides[0], true);
     handleResize();
   });
 
@@ -308,7 +276,7 @@ export const FPContainer: FC<FPContainerInterface> = ({
         ref={FPContainerInnerRef}
         className={className}
         style={{
-          transition: `transform ${transitionTiming}ms cubic-bezier(0.645, 0.045, 0.355, 1.000)`,
+          transition: `transform ${pageState.transitionTiming}ms cubic-bezier(0.645, 0.045, 0.355, 1.000)`,
           transform: `translate3D(0, ${pageState.translateY}px, 0)`,
           ...useStyle,
         }}

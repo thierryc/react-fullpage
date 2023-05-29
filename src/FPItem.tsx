@@ -18,16 +18,12 @@ export interface FPItemInterface {
   height?: string;
   style?: CSSProperties;
   className?: string;
-  onShow?: Function;
-  onHide?: Function;
 }
 export const FPItem: FC<FPItemInterface> = ({
   children,
   //
   className = "",
   height = "100vh",
-  onHide,
-  onShow,
   style = {},
 }) => {
   const { subscribe, unsubscribe, getIndex } = useContext(FPContext);

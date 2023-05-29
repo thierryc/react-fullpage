@@ -1,13 +1,15 @@
 import {
-  useState,
-  useEffect,
-  useRef,
-  useContext,
-  useMemo,
   type CSSProperties,
+  type FC,
   type KeyboardEvent,
   type ReactNode,
-  type FC,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  useTransition,
 } from "react";
 import { motion, type MotionProps } from "framer-motion";
 
@@ -25,6 +27,7 @@ export interface FPContainerInterface {
   onHide?: Function;
   onShow?: Function;
   outerStyle?: CSSProperties;
+  scrollDebounceMs?: number;
   style?: CSSProperties;
   transitionTiming?: number;
 }
@@ -38,12 +41,17 @@ export const FPContainer: FC<FPContainerInterface> = ({
   onHide,
   onShow,
   outerStyle = {},
+  scrollDebounceMs = 125,
   style = {},
   transitionTiming = 700,
 }) => {
-  const throttled = useRef(false);
-  const ticking = useRef(false);
-  const scrollY = useRef(isSsr ? 0 : window.scrollY);
+  const FPContainerInnerRef = useRef<HTMLDivElement>(null);
+  const scrollTimer = useRef<Timer>(null);
+  // @see https://developer.mozilla.org/en-US/docs/Web/API/Window/pageYOffset
+  // ^ IE users dont deserve our support
+  const scrollY = useRef<number>(isSsr ? 0 : window.scrollY);
+  const throttled = useRef<boolean>(false);
+  const ticking = useRef<boolean>(false);
 
   const useOuterStyle = useMemo(
     () => ({
@@ -66,9 +74,9 @@ export const FPContainer: FC<FPContainerInterface> = ({
     [style]
   );
 
-  const FPContainerInnerRef = useRef<HTMLDivElement>(null);
+  const { ReactFPRef, slides, isFullscreen } = useContext(FPContext);
 
-  const { ReactFPRef, slides } = useContext(FPContext);
+  const [, startTransition] = useTransition();
 
   const [pageState, setPageState] = useState({
     fullpageHeight: 0,
@@ -81,39 +89,49 @@ export const FPContainer: FC<FPContainerInterface> = ({
   });
 
   // @see https://developer.mozilla.org/en-US/docs/Web/API/Document/scroll_event
-  const handleScroll = (e: UIEvent) => {
+  const handleScroll = () => {
     if (throttled.current || isSsr) return;
     throttled.current = true;
-
-    e.stopPropagation();
-
-    // scroll first, then enable throttling
-    setTimeout(() => {
-      throttled.current = false;
-    }, transitionTiming);
 
     if (!ticking.current) {
       window.requestAnimationFrame(() => {
         const newScrollY = window.scrollY;
         const prevScrollY = scrollY.current;
 
-        if (prevScrollY < newScrollY) forward();
+        if (newScrollY === 0) first();
+        else if (
+          window.innerHeight + Math.round(newScrollY) >=
+          document.body.offsetHeight
+        )
+          last();
+        else if (prevScrollY < newScrollY) forward();
         else if (prevScrollY > newScrollY) back();
 
         if (
           pageState.resetScroll ||
           transitionTiming !== pageState.transitionTiming
         )
-          setPageState((prevState) => ({
-            ...prevState,
-            resetScroll: false,
-            transitionTiming,
-          }));
+          startTransition(() => {
+            setPageState((prevState) => ({
+              ...prevState,
+              resetScroll: false,
+              transitionTiming,
+            }));
+          });
 
         ticking.current = false;
       });
       ticking.current = true;
     }
+
+    setTimeout(() => {
+      throttled.current = false;
+    }, transitionTiming);
+  };
+
+  const bouncedHandleScroll = () => {
+    clearTimeout(scrollTimer.current);
+    scrollTimer.current = setTimeout(() => handleScroll(), scrollDebounceMs);
   };
 
   const handleResize = () => {
@@ -134,15 +152,17 @@ export const FPContainer: FC<FPContainerInterface> = ({
     if (!ticking.current) {
       requestAnimationFrame(() => {
         const fullpageHeight = FPContainerInnerRef.current!.clientHeight;
-        // update count
-        setPageState((prevState) => ({
-          ...prevState,
-          fullpageHeight,
-          viewportHeight: Math.max(
-            document.documentElement.clientHeight,
-            window.innerHeight
-          ),
-        }));
+
+        startTransition(() => {
+          setPageState((prevState) => ({
+            ...prevState,
+            fullpageHeight,
+            viewportHeight: Math.max(
+              document.documentElement.clientHeight,
+              window.innerHeight
+            ),
+          }));
+        });
         ReactFPRef.current!.style.height = `${fullpageHeight}px`;
         ticking.current = false;
       });
@@ -203,7 +223,10 @@ export const FPContainer: FC<FPContainerInterface> = ({
       slideIndex,
       translateY,
     };
-    setPageState((prevState) => ({ ...prevState, ...newPageState }));
+
+    startTransition(() => {
+      setPageState((prevState) => ({ ...prevState, ...newPageState }));
+    });
 
     setTimeout(() => {
       throttled.current = false;
@@ -256,20 +279,21 @@ export const FPContainer: FC<FPContainerInterface> = ({
   useEffect(() => {
     if (isSsr) return;
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("scroll", bouncedHandleScroll, { passive: true });
     window.addEventListener("resize", handleResize, { passive: true });
     document.addEventListener("keydown", handleKeys, { passive: true });
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scroll", bouncedHandleScroll);
       window.removeEventListener("resize", handleResize);
       document.removeEventListener("keydown", handleKeys);
     };
   });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     handleResize();
-  });
+    handleScroll();
+  }, [isFullscreen]);
 
   return (
     <div style={useOuterStyle}>

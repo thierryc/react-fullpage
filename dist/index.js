@@ -9377,12 +9377,15 @@ var FPContainer = ({
   onHide,
   onShow,
   outerStyle = {},
+  scrollDebounceMs = 125,
   style = {},
   transitionTiming = 700
 }) => {
+  const FPContainerInnerRef = import_react19.useRef(null);
+  const scrollTimer = import_react19.useRef(null);
+  const scrollY = import_react19.useRef(isSsr ? 0 : window.scrollY);
   const throttled = import_react19.useRef(false);
   const ticking = import_react19.useRef(false);
-  const scrollY = import_react19.useRef(isSsr ? 0 : window.scrollY);
   const useOuterStyle = import_react19.useMemo(() => ({
     left: 0,
     position: "fixed",
@@ -9396,8 +9399,8 @@ var FPContainer = ({
     right: 0,
     ...style
   }), [style]);
-  const FPContainerInnerRef = import_react19.useRef(null);
-  const { ReactFPRef, slides } = import_react19.useContext(FPContext);
+  const { ReactFPRef, slides, isFullscreen } = import_react19.useContext(FPContext);
+  const [, startTransition] = import_react19.useTransition();
   const [pageState, setPageState] = import_react19.useState({
     fullpageHeight: 0,
     offsetHeight: 0,
@@ -9407,32 +9410,41 @@ var FPContainer = ({
     translateY: 0,
     viewportHeight: 0
   });
-  const handleScroll = (e) => {
+  const handleScroll = () => {
     if (throttled.current || isSsr)
       return;
     throttled.current = true;
-    e.stopPropagation();
-    setTimeout(() => {
-      throttled.current = false;
-    }, transitionTiming);
     if (!ticking.current) {
       window.requestAnimationFrame(() => {
         const newScrollY = window.scrollY;
         const prevScrollY = scrollY.current;
-        if (prevScrollY < newScrollY)
+        if (newScrollY === 0)
+          first();
+        else if (window.innerHeight + Math.round(newScrollY) >= document.body.offsetHeight)
+          last();
+        else if (prevScrollY < newScrollY)
           forward();
         else if (prevScrollY > newScrollY)
           back3();
         if (pageState.resetScroll || transitionTiming !== pageState.transitionTiming)
-          setPageState((prevState) => ({
-            ...prevState,
-            resetScroll: false,
-            transitionTiming
-          }));
+          startTransition(() => {
+            setPageState((prevState) => ({
+              ...prevState,
+              resetScroll: false,
+              transitionTiming
+            }));
+          });
         ticking.current = false;
       });
       ticking.current = true;
     }
+    setTimeout(() => {
+      throttled.current = false;
+    }, transitionTiming);
+  };
+  const bouncedHandleScroll = () => {
+    clearTimeout(scrollTimer.current);
+    scrollTimer.current = setTimeout(() => handleScroll(), scrollDebounceMs);
   };
   const handleResize = () => {
     if (!FPContainerInnerRef.current || isSsr)
@@ -9443,11 +9455,13 @@ var FPContainer = ({
     if (!ticking.current) {
       requestAnimationFrame(() => {
         const fullpageHeight = FPContainerInnerRef.current.clientHeight;
-        setPageState((prevState) => ({
-          ...prevState,
-          fullpageHeight,
-          viewportHeight: Math.max(document.documentElement.clientHeight, window.innerHeight)
-        }));
+        startTransition(() => {
+          setPageState((prevState) => ({
+            ...prevState,
+            fullpageHeight,
+            viewportHeight: Math.max(document.documentElement.clientHeight, window.innerHeight)
+          }));
+        });
         ReactFPRef.current.style.height = `${fullpageHeight}px`;
         ticking.current = false;
       });
@@ -9496,7 +9510,9 @@ var FPContainer = ({
       slideIndex,
       translateY
     };
-    setPageState((prevState) => ({ ...prevState, ...newPageState }));
+    startTransition(() => {
+      setPageState((prevState) => ({ ...prevState, ...newPageState }));
+    });
     setTimeout(() => {
       throttled.current = false;
       scrollY.current = window.scrollY;
@@ -9541,18 +9557,19 @@ var FPContainer = ({
   import_react19.useEffect(() => {
     if (isSsr)
       return;
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("scroll", bouncedHandleScroll, { passive: true });
     window.addEventListener("resize", handleResize, { passive: true });
     document.addEventListener("keydown", handleKeys, { passive: true });
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scroll", bouncedHandleScroll);
       window.removeEventListener("resize", handleResize);
       document.removeEventListener("keydown", handleKeys);
     };
   });
-  import_react19.useEffect(() => {
+  import_react19.useLayoutEffect(() => {
     handleResize();
-  });
+    handleScroll();
+  }, [isFullscreen]);
   return jsx_runtime.jsx("div", {
     style: useOuterStyle,
     children: jsx_runtime.jsx(motion2.div, {
@@ -9573,6 +9590,7 @@ var import_react20 = __toESM(require_react());
 var observeFn = (el) => el;
 var FPContext = import_react20.createContext({
   getIndex: (el) => 0,
+  isFullscreen: false,
   ReactFPRef: null,
   slides: [],
   subscribe: observeFn,
@@ -9588,7 +9606,11 @@ var FPItem = ({
   style = {},
   motionProps = {}
 }) => {
-  const { subscribe, unsubscribe, getIndex } = import_react21.useContext(FPContext);
+  const useStyle2 = import_react21.useMemo(() => ({
+    height,
+    ...style
+  }), [style]);
+  const { subscribe, unsubscribe } = import_react21.useContext(FPContext);
   const FPItemRef2 = import_react21.useRef(null);
   import_react21.useEffect(() => {
     subscribe(FPItemRef2);
@@ -9598,10 +9620,7 @@ var FPItem = ({
   }, []);
   return jsx_runtime2.jsx(motion2.div, {
     className,
-    style: {
-      height,
-      ...style
-    },
+    style: useStyle2,
     ref: FPItemRef2,
     ...motionProps,
     children
@@ -9784,11 +9803,16 @@ var FullScreen = function FullScreen2(_ref) {
 
 // src/ReactFP.tsx
 var jsx_runtime4 = __toESM(require_jsx_runtime());
+var ImLoading = () => jsx_runtime4.jsx("div", {
+  style: { backgroundColor: "black", height: "100vh" },
+  children: "Loading"
+});
 var ReactFP = ({
   children,
   Button = FSButton,
   buttonStyle = {},
   className = "",
+  Fallback = ImLoading,
   motionProps = {},
   style = {}
 }) => {
@@ -9796,7 +9820,15 @@ var ReactFP = ({
     position: "relative",
     ...style
   }), [style]);
+  const useButtonStyle = import_react23.useMemo(() => ({
+    position: "fixed",
+    left: 10,
+    top: 10,
+    zIndex: 9999,
+    ...buttonStyle
+  }), [buttonStyle]);
   const [slides, setSlides] = import_react23.useState([]);
+  const deferredSlides = import_react23.useDeferredValue(slides);
   const fullscreen = import_react23.useRef(false);
   const ReactFPRef = import_react23.useRef(null);
   const getIndex = (slide) => {
@@ -9819,19 +9851,14 @@ var ReactFP = ({
           }
           return void (fullscreen.current = !fullscreen.current);
         },
-        style: {
-          position: "fixed",
-          left: 10,
-          top: 10,
-          zIndex: 9999,
-          ...buttonStyle
-        }
+        style: useButtonStyle
       }),
       jsx_runtime4.jsx(FPContext.Provider, {
         value: {
           getIndex,
+          isFullscreen: !!fullscreen.current,
           ReactFPRef,
-          slides,
+          slides: deferredSlides,
           subscribe,
           unsubscribe
         },
@@ -9840,7 +9867,10 @@ var ReactFP = ({
           ref: ReactFPRef,
           className,
           ...motionProps,
-          children
+          children: jsx_runtime4.jsx(import_react23.Suspense, {
+            fallback: jsx_runtime4.jsx(Fallback, {}),
+            children
+          })
         })
       })
     ]

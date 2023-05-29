@@ -2,6 +2,8 @@ import {
   useState,
   useRef,
   useMemo,
+  useDeferredValue,
+  Suspense,
   type CSSProperties,
   type ReactNode,
   type ElementType,
@@ -12,12 +14,17 @@ import { motion, type MotionProps } from "framer-motion";
 
 import { FPContext, FSButton, type FPItemRef } from ".";
 
+const ImLoading = () => (
+  <div style={{ backgroundColor: "black", height: "100vh" }}>Loading</div>
+);
+
 export interface ReactFPInterface {
   children: ReactNode;
   //
   Button?: ElementType;
   buttonStyle?: CSSProperties;
   className?: string;
+  Fallback?: ElementType;
   motionProps?: MotionProps;
   style?: CSSProperties;
 }
@@ -28,6 +35,7 @@ export const ReactFP: FC<ReactFPInterface> = ({
   Button = FSButton,
   buttonStyle = {},
   className = "",
+  Fallback = ImLoading,
   motionProps = {},
   style = {},
 }) => {
@@ -38,8 +46,19 @@ export const ReactFP: FC<ReactFPInterface> = ({
     }),
     [style]
   );
+  const useButtonStyle = useMemo(
+    () => ({
+      position: "fixed",
+      left: 10,
+      top: 10,
+      zIndex: 9999,
+      ...buttonStyle,
+    }),
+    [buttonStyle]
+  );
 
   const [slides, setSlides] = useState<FPItemRef[]>([]);
+  const deferredSlides = useDeferredValue(slides);
 
   const fullscreen = useRef(false);
   const ReactFPRef = useRef<HTMLDivElement>(null);
@@ -72,19 +91,14 @@ export const ReactFP: FC<ReactFPInterface> = ({
           }
           return void (fullscreen.current = !fullscreen.current);
         }}
-        style={{
-          position: "fixed",
-          left: 10,
-          top: 10,
-          zIndex: 9999,
-          ...buttonStyle,
-        }}
+        style={useButtonStyle}
       />
       <FPContext.Provider
         value={{
           getIndex,
+          isFullscreen: !!fullscreen.current,
           ReactFPRef,
-          slides,
+          slides: deferredSlides,
           subscribe,
           unsubscribe,
         }}
@@ -95,7 +109,7 @@ export const ReactFP: FC<ReactFPInterface> = ({
           className={className}
           {...motionProps}
         >
-          {children}
+          <Suspense fallback={<Fallback />}>{children}</Suspense>
         </motion.div>
       </FPContext.Provider>
     </FullScreen>

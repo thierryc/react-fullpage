@@ -1,10 +1,11 @@
 import {
-  useContext,
-  useRef,
-  useEffect,
   type CSSProperties,
-  type ReactNode,
   type FC,
+  type ReactNode,
+  useContext,
+  useEffect,
+  useRef,
+  useMemo,
 } from "react";
 import { motion, type MotionProps } from "framer-motion";
 
@@ -26,7 +27,15 @@ export const FPItem: FC<FPItemInterface> = ({
   style = {},
   motionProps = {},
 }) => {
-  const { subscribe, unsubscribe, getIndex } = useContext(FPContext);
+  const useStyle = useMemo(
+    () => ({
+      height,
+      ...style,
+    }),
+    [style]
+  );
+
+  const { subscribe, unsubscribe } = useContext(FPContext);
   const FPItemRef: FPItemRef = useRef(null);
 
   useEffect(() => {
@@ -36,13 +45,11 @@ export const FPItem: FC<FPItemInterface> = ({
       unsubscribe(FPItemRef);
     };
   }, []);
+
   return (
     <motion.div
       className={className}
-      style={{
-        height,
-        ...style,
-      }}
+      style={useStyle}
       ref={FPItemRef}
       {...motionProps}
     >

@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   root: true,
   parser: "@typescript-eslint/parser",
   parserOptions: {
@@ -10,12 +10,9 @@ export default {
   },
   ignorePatterns: ["**/lib", "**/dist", "**/*.json"],
   extends: [
-    "react-app",
+    "react-app", // provides @typescript-eslint DO NOT added it twice
     "react-app/jest",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:@typescript-eslint/recommended-requiring-type-checking",
-    "plugin:@typescript-eslint/strict",
-    "plugin:@tanstack/eslint-plugin-query/recommended",
+    "plugin:jsx-a11y/recommended",
     "prettier",
   ],
   // @see https://eslint.org/docs/latest/user-guide/configuring/rules

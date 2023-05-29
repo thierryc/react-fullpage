@@ -9,8 +9,9 @@
   "scripts": {
     "barrels": "bunx barrelsby --config ./barrels.json",
     "build": "rm -rf ./dist/* && bun build src/index.ts --outdir ./dist",
-    "lint": "bunx eslint src -- --fix",
+    "lint": "bunx eslint src --fix --resolve-plugins-relative-to .",
     "pretty": "bunx prettier --write 'src/**/*.(ts|tsx)'",
+    "test:types": "bunx tsc",
     "upgrade:deps": "bunx ncu -u && bun install"
   },
   "peerDependencies": {
@@ -22,25 +23,21 @@
     "@types/react": "18.2.7",
     "@types/react-dom": "18.2.4",
     "@types/react-router-dom": "5.3.3",
-    "@typescript-eslint/eslint-plugin": "5.59.7",
-    "@typescript-eslint/parser": "5.59.7",
-    "barrels": "^1.6.6",
+    "barrels": "1.6.6",
     "bun-types": "canary",
     "eslint": "8.41.0",
     "eslint-config-prettier": "8.8.0",
-    "eslint-plugin-jsx-a11y": "^6.7.1",
-    "eslint-plugin-react": "^7.32.2",
-    "npm-check-updates": "^16.10.12",
-    "prettier": "^2.8.8",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "framer-motion": "^10.12.16",
+    "eslint-config-react-app": "7.0.1",
+    "eslint-plugin-jsx-a11y": "6.7.1",
+    "eslint-plugin-react": "7.32.2",
+    "npm-check-updates": "16.10.12",
+    "prettier": "2.8.8",
     "typescript": "beta"
   },
   "files": [
     "dist"
   ],
   "dependencies": {
-    "react-full-screen": "^1.1.1"
+    "react-full-screen": "1.1.1"
   }
 }

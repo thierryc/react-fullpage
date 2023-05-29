@@ -12,7 +12,12 @@
 ## Install
 
 ```bash
-bun add git@github.com:noahehall/react-fullerpage.git
+bun add \
+  framer-motion \
+  react \
+  react-dom \
+  git@github.com:noahehall/react-fullerpage.git
+
 ```
 
 ## Usage

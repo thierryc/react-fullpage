@@ -16,7 +16,7 @@ bun add \
   framer-motion \
   react \
   react-dom \
-  git@github.com:noahehall/react-fullerpage.git
+  github:noahehall/react-fullerpage
 
 ```
 

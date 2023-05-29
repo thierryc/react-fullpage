@@ -104,9 +104,10 @@ export const ReactFP: FC<ReactFPInterface> = ({
         }}
       >
         <motion.div
-          style={useStyle}
-          ref={ReactFPRef}
           className={className}
+          layout
+          ref={ReactFPRef}
+          style={useStyle}
           {...motionProps}
         >
           <Suspense fallback={<Fallback />}>{children}</Suspense>

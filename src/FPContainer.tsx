@@ -43,7 +43,7 @@ export const FPContainer: FC<FPContainerInterface> = ({
   outerStyle = {},
   scrollDebounceMs = 125,
   style = {},
-  transitionTiming = 700,
+  transitionTiming = 0.5,
 }) => {
   const FPContainerInnerRef = useRef<HTMLDivElement>(null);
   const scrollTimer = useRef<Timer>(null);
@@ -83,7 +83,6 @@ export const FPContainer: FC<FPContainerInterface> = ({
     offsetHeight: 0,
     resetScroll: false,
     slideIndex: 0,
-    transitionTiming,
     translateY: 0,
     viewportHeight: 0,
   });
@@ -107,15 +106,11 @@ export const FPContainer: FC<FPContainerInterface> = ({
         else if (prevScrollY < newScrollY) forward();
         else if (prevScrollY > newScrollY) back();
 
-        if (
-          pageState.resetScroll ||
-          transitionTiming !== pageState.transitionTiming
-        )
+        if (pageState.resetScroll)
           startTransition(() => {
             setPageState((prevState) => ({
               ...prevState,
               resetScroll: false,
-              transitionTiming,
             }));
           });
 
@@ -126,7 +121,7 @@ export const FPContainer: FC<FPContainerInterface> = ({
 
     setTimeout(() => {
       throttled.current = false;
-    }, transitionTiming);
+    }, transitionTiming * 1000);
   };
 
   const bouncedHandleScroll = () => {
@@ -201,7 +196,7 @@ export const FPContainer: FC<FPContainerInterface> = ({
     if (!slides[slideIndex] || pageState.slideIndex === slideIndex || isSsr)
       return;
 
-    const { transitionTiming, fullpageHeight, viewportHeight } = pageState;
+    const { fullpageHeight, viewportHeight } = pageState;
 
     const newSlide = slides[slideIndex];
 
@@ -212,7 +207,7 @@ export const FPContainer: FC<FPContainerInterface> = ({
 
     // TODO(noah): no clue what the original author meant
     if (typeof onHide === "function") {
-      setTimeout(() => onHide(translateY, transitionTiming));
+      setTimeout(() => onHide(translateY, transitionTiming * 1000));
     }
 
     throttled.current = true;
@@ -231,7 +226,7 @@ export const FPContainer: FC<FPContainerInterface> = ({
     setTimeout(() => {
       throttled.current = false;
       scrollY.current = window.scrollY;
-    }, transitionTiming);
+    }, transitionTiming * 1000);
     // TODO(noah): no clue what the original author meant
     if (typeof onShow === "function") {
       onShow(newPageState);
@@ -298,13 +293,15 @@ export const FPContainer: FC<FPContainerInterface> = ({
   return (
     <div style={useOuterStyle}>
       <motion.div
-        ref={FPContainerInnerRef}
         className={className}
-        style={{
-          transition: `transform ${pageState.transitionTiming}ms cubic-bezier(0.645, 0.045, 0.355, 1.000)`,
-          transform: `translate3D(0, ${pageState.translateY}px, 0)`,
-          ...useStyle,
+        ref={FPContainerInnerRef}
+        style={useStyle}
+        animate={{ y: pageState.translateY }}
+        transition={{
+          ease: [0.17, 0.67, 0.83, 0.67],
+          duration: transitionTiming,
         }}
+        layout
         {...motionProps}
       >
         {children}

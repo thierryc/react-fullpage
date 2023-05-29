@@ -9379,7 +9379,7 @@ var FPContainer = ({
   outerStyle = {},
   scrollDebounceMs = 125,
   style = {},
-  transitionTiming = 700
+  transitionTiming = 0.5
 }) => {
   const FPContainerInnerRef = import_react19.useRef(null);
   const scrollTimer = import_react19.useRef(null);
@@ -9406,7 +9406,6 @@ var FPContainer = ({
     offsetHeight: 0,
     resetScroll: false,
     slideIndex: 0,
-    transitionTiming,
     translateY: 0,
     viewportHeight: 0
   });
@@ -9426,12 +9425,11 @@ var FPContainer = ({
           forward();
         else if (prevScrollY > newScrollY)
           back3();
-        if (pageState.resetScroll || transitionTiming !== pageState.transitionTiming)
+        if (pageState.resetScroll)
           startTransition(() => {
             setPageState((prevState) => ({
               ...prevState,
-              resetScroll: false,
-              transitionTiming
+              resetScroll: false
             }));
           });
         ticking.current = false;
@@ -9440,7 +9438,7 @@ var FPContainer = ({
     }
     setTimeout(() => {
       throttled.current = false;
-    }, transitionTiming);
+    }, transitionTiming * 1000);
   };
   const bouncedHandleScroll = () => {
     clearTimeout(scrollTimer.current);
@@ -9497,11 +9495,11 @@ var FPContainer = ({
   const goto = (slideIndex, resetScroll = false) => {
     if (!slides[slideIndex] || pageState.slideIndex === slideIndex || isSsr)
       return;
-    const { transitionTiming: transitionTiming2, fullpageHeight, viewportHeight } = pageState;
+    const { fullpageHeight, viewportHeight } = pageState;
     const newSlide = slides[slideIndex];
     const translateY = Math.max((fullpageHeight - viewportHeight) * -1, newSlide.current.offsetTop * -1);
     if (typeof onHide === "function") {
-      setTimeout(() => onHide(translateY, transitionTiming2));
+      setTimeout(() => onHide(translateY, transitionTiming * 1000));
     }
     throttled.current = true;
     const newPageState = {
@@ -9516,7 +9514,7 @@ var FPContainer = ({
     setTimeout(() => {
       throttled.current = false;
       scrollY.current = window.scrollY;
-    }, transitionTiming2);
+    }, transitionTiming * 1000);
     if (typeof onShow === "function") {
       onShow(newPageState);
     }
@@ -9573,13 +9571,15 @@ var FPContainer = ({
   return jsx_runtime.jsx("div", {
     style: useOuterStyle,
     children: jsx_runtime.jsx(motion2.div, {
-      ref: FPContainerInnerRef,
       className,
-      style: {
-        transition: `transform ${pageState.transitionTiming}ms cubic-bezier(0.645, 0.045, 0.355, 1.000)`,
-        transform: `translate3D(0, ${pageState.translateY}px, 0)`,
-        ...useStyle2
+      ref: FPContainerInnerRef,
+      style: useStyle2,
+      animate: { y: pageState.translateY },
+      transition: {
+        ease: [0.17, 0.67, 0.83, 0.67],
+        duration: transitionTiming
       },
+      layout: true,
       ...motionProps,
       children
     })
@@ -9863,9 +9863,10 @@ var ReactFP = ({
           unsubscribe
         },
         children: jsx_runtime4.jsx(motion2.div, {
-          style: useStyle2,
-          ref: ReactFPRef,
           className,
+          layout: true,
+          ref: ReactFPRef,
+          style: useStyle2,
           ...motionProps,
           children: jsx_runtime4.jsx(import_react23.Suspense, {
             fallback: jsx_runtime4.jsx(Fallback, {}),

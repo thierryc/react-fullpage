@@ -7,10 +7,7 @@ import {
   type ReactNode,
   type FC,
 } from "react";
-
-import { FPContext } from "./FPContext";
-
-export const FPItemContext = createContext(null);
+import { FPContext, FPItemRef } from ".";
 
 export interface FPItemInterface {
   children: ReactNode;
@@ -27,7 +24,7 @@ export const FPItem: FC<FPItemInterface> = ({
   style = {},
 }) => {
   const { subscribe, unsubscribe, getIndex } = useContext(FPContext);
-  const FPItemRef = useRef(null);
+  const FPItemRef: FPItemRef = useRef(null);
 
   useEffect(() => {
     subscribe(FPItemRef);
@@ -37,21 +34,15 @@ export const FPItem: FC<FPItemInterface> = ({
     };
   }, []);
   return (
-    <FPItemContext.Provider
-      value={{
-        index: getIndex(FPItemRef),
+    <div
+      className={className}
+      style={{
+        height,
+        ...style,
       }}
+      ref={FPItemRef}
     >
-      <div
-        className={className}
-        style={{
-          height,
-          ...style,
-        }}
-        ref={FPItemRef}
-      >
-        {children}
-      </div>
-    </FPItemContext.Provider>
+      {children}
+    </div>
   );
 };

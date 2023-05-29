@@ -7,7 +7,6 @@ import {
   type CSSProperties,
   type KeyboardEvent,
   type ReactNode,
-  type ReactElement,
   type FC,
 } from "react";
 
@@ -130,7 +129,6 @@ export const FPContainer: FC<FPContainerInterface> = ({
       return;
 
     if (!ticking.current) {
-      console.info("\n\n handle resize: requesting animation frame");
       requestAnimationFrame(() => {
         const fullpageHeight = FPContainerInnerRef.current!.clientHeight;
         // update count

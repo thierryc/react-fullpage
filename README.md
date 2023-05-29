@@ -4,6 +4,9 @@
 - original work by [thierryc](https://github.com/thierryc)
 - dependencies
   - [react-fullscreen](https://github.com/snakesilk/react-fullscreen)
+- peer dependencies
+  - react18
+  - react-dom 18
   - [framer-motion](https://github.com/framer/motion/tree/main/packages/framer-motion)
 
 ## Install
@@ -22,30 +25,41 @@ bun add git@github.com:noahehall/react-fullerpage.git
  * FYI-2: you need to set backgroundColor for fullscreen mode
  * else it goes black, dunno, ignoring
  */
-import {ReactFP, FPContainer, FPItem } from 'react-fullerpage'
+import { ReactFP, FPContainer, FPItem } from "react-fullerpage";
 
 export const App = () => (
   <ReactFP>
     <FPContainer>
-      <FPItem style={{
-        backgroundColor: 'lime',
-        height: '80vh', // defaults to 100vh
-        padding: '1em',
-      }}>1</FPItem>
+      <FPItem
+        style={{
+          backgroundColor: "lime",
+          height: "80vh", // defaults to 100vh
+          padding: "1em",
+        }}
+      >
+        1
+      </FPItem>
 
-      <FPItem style={{
-        backgroundColor: 'coral',
-        padding: '1em',
-      }}>2</FPItem>
+      <FPItem
+        style={{
+          backgroundColor: "coral",
+          padding: "1em",
+        }}
+      >
+        2
+      </FPItem>
 
-      <FPItem style={{
-        backgroundColor: 'firebrick',
-        padding: '1em',
-      }}>3</FPItem>
+      <FPItem
+        style={{
+          backgroundColor: "firebrick",
+          padding: "1em",
+        }}
+      >
+        3
+      </FPItem>
     </FPContainer>
   </ReactFP>
-)
-
+);
 ```
 
 ## License (MIT)

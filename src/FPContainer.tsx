@@ -9,8 +9,9 @@ import {
   type ReactNode,
   type FC,
 } from "react";
+import { motion, type MotionProps } from "framer-motion";
 
-import { FPContext, type FPItemRef } from ".";
+import { FPContext } from ".";
 
 const isSsr = typeof window === "undefined" || typeof document === "undefined";
 
@@ -19,6 +20,7 @@ export interface FPContainerInterface {
   //
   className?: string;
   keyboardShortcut?: boolean;
+  motionProps?: MotionProps;
   onChange?: Function;
   onHide?: Function;
   onShow?: Function;
@@ -31,11 +33,12 @@ export const FPContainer: FC<FPContainerInterface> = ({
   //
   className = "",
   keyboardShortcut = true,
+  motionProps = {},
   onChange,
   onHide,
   onShow,
-  style = {},
   outerStyle = {},
+  style = {},
   transitionTiming = 700,
 }) => {
   const throttled = useRef(false);
@@ -65,7 +68,7 @@ export const FPContainer: FC<FPContainerInterface> = ({
 
   const FPContainerInnerRef = useRef<HTMLDivElement>(null);
 
-  const { ReactFPRef, slides, getIndex } = useContext(FPContext);
+  const { ReactFPRef, slides } = useContext(FPContext);
 
   const [pageState, setPageState] = useState({
     fullpageHeight: 0,
@@ -270,7 +273,7 @@ export const FPContainer: FC<FPContainerInterface> = ({
 
   return (
     <div style={useOuterStyle}>
-      <div
+      <motion.div
         ref={FPContainerInnerRef}
         className={className}
         style={{
@@ -278,9 +281,10 @@ export const FPContainer: FC<FPContainerInterface> = ({
           transform: `translate3D(0, ${pageState.translateY}px, 0)`,
           ...useStyle,
         }}
+        {...motionProps}
       >
         {children}
-      </div>
+      </motion.div>
     </div>
   );
 };

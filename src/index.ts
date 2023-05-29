@@ -6,6 +6,5 @@ export * from "./FSButton";
 export * from "./FPContainer";
 export * from "./FPContext";
 export * from "./FPItem";
-export * from "./FPNav";
 export * from "./FPTypes";
 export * from "./ReactFP";

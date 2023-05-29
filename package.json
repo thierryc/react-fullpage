@@ -33,6 +33,7 @@
     "dist"
   ],
   "dependencies": {
+    "framer-motion": "^10.12.16",
     "react-full-screen": "^1.1.1"
   }
 }

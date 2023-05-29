@@ -4,11 +4,11 @@ import {
   useMemo,
   type CSSProperties,
   type ReactNode,
-  type ReactElement,
   type ElementType,
   type FC,
 } from "react";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
+import { motion, type MotionProps } from "framer-motion";
 
 import { FPContext, FSButton, type FPItemRef } from ".";
 
@@ -18,16 +18,18 @@ export interface ReactFPInterface {
   Button?: ElementType;
   buttonStyle?: CSSProperties;
   className?: string;
+  motionProps?: MotionProps;
   style?: CSSProperties;
 }
 
 export const ReactFP: FC<ReactFPInterface> = ({
   children,
   //
-  className = "",
-  style = {},
   Button = FSButton,
   buttonStyle = {},
+  className = "",
+  motionProps = {},
+  style = {},
 }) => {
   const useStyle = useMemo(
     () => ({
@@ -71,7 +73,7 @@ export const ReactFP: FC<ReactFPInterface> = ({
           return void (fullscreen.current = !fullscreen.current);
         }}
         style={{
-          position: "absolute",
+          position: "fixed",
           left: 10,
           top: 10,
           zIndex: 9999,
@@ -87,9 +89,14 @@ export const ReactFP: FC<ReactFPInterface> = ({
           unsubscribe,
         }}
       >
-        <div style={useStyle} ref={ReactFPRef} className={className}>
+        <motion.div
+          style={useStyle}
+          ref={ReactFPRef}
+          className={className}
+          {...motionProps}
+        >
           {children}
-        </div>
+        </motion.div>
       </FPContext.Provider>
     </FullScreen>
   );

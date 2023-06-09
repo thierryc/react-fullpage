@@ -15,9 +15,9 @@
     "upgrade:deps": "bunx ncu -u && bun install"
   },
   "peerDependencies": {
-    "framer-motion": "10.x",
-    "react-dom": "18.x",
-    "react": "18.x"
+    "framer-motion": "^10.1",
+    "react-dom": "^18.2",
+    "react": "^18.2"
   },
   "devDependencies": {
     "@types/react": "18.2.7",

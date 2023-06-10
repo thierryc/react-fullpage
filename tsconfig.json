@@ -10,19 +10,11 @@
       "**/node_modules",
       "**/.git",
       "**/build",
-      "**/.turbo",
       "**/dist",
       "**/lib"
     ]
   },
-  "exclude": [
-    "**/node_modules",
-    "**/.git",
-    "**/build",
-    "**/.turbo",
-    "**/dist",
-    "**/lib"
-  ],
+  "exclude": ["**/node_modules", "**/.git", "**/build", "**/dist", "**/lib"],
   "compilerOptions": {
     "allowImportingTsExtensions": true,
     "allowJs": true,

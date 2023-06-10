@@ -1,6 +1,0 @@
-[submodule "gh-pages/gh-pages"]
-	path = gh-pages/gh-pages
-	url = https://github.com/thierryc/react-fullpage-gh-pages.git
-[submodule "gh-pages"]
-	path = gh-pages
-	url = https://github.com/thierryc/react-fullpage-gh-pages.git

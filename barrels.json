@@ -1,0 +1,8 @@
+{
+  "delete": true,
+  "directory": ["src"],
+  "exclude": ".*.d.ts",
+  "local": false,
+  "location": "all",
+  "structure": "flat"
+}

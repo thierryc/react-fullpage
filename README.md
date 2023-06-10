@@ -1,128 +1,71 @@
-# @ap.cx/react-fullpage
+# react-fullerpage
 
-https://thierryc.github.io/react-fullpage/
-
-another demo:
-
-https://thierryc.github.io/react-fullpage-example/
-
-This project is still in a very **early stage**.
-You shouldn't use this for production unless you really know what you're doing. 🖖
-
-## Features
-
-- Design for Mobile, Tablet, and Desktop
-- Nested Component (simple to use)
-- Hide safari's header on Scroll on iphone and ipad
-- Hide Google Chrome's header on Scroll on iOS and Android
-- Drived by the scroll
-- CSS animation
-- GPU/CPU swtich
-- Very Small ( ~ 25kB )
-- MIT License (no fullpage.js dependency)
-
-> Create Fullscreen Scrolling Websites
-
-[![NPM](https://img.shields.io/npm/v/@ap.cx/react-fullpage.svg)](https://www.npmjs.com/package/react-fullpage)
-[![MIT](https://img.shields.io/packagist/l/doctrine/orm.svg)](https://github.com/thierryc/react-fullpage/blob/master/LICENSE)
+- typescript first via bun.sh
+- original work by [thierryc](https://github.com/thierryc)
+- dependencies
+  - [react-fullscreen](https://github.com/snakesilk/react-fullscreen)
+- peer dependencies
+  - react18
+  - react-dom 18
+  - [framer-motion](https://github.com/framer/motion/tree/main/packages/framer-motion)
 
 ## Install
 
 ```bash
-npm install --save @ap.cx/react-fullpage
+bun add \
+  framer-motion \
+  react \
+  react-dom \
+  github:noahehall/react-fullerpage
+
 ```
+
 ## Usage
 
 ```jsx
+/**
+ * FYI-1: all elements take a motionProps={any motion prop}
+ * please check the source, or submit a PR if you want to document the source
+ *
+ * FYI-2: you need to set backgroundColor for fullscreen mode
+ * else it goes black, dunno, ignoring
+ */
+import { ReactFP, FPContainer, FPItem } from "react-fullerpage";
 
-import React, { Component } from 'react'
-import Fullpage, { FullPageSections, FullpageSection } from '@ap.cx/react-fullpage'
+export const App = () => (
+  <ReactFP>
+    <FPContainer>
+      <FPItem
+        style={{
+          backgroundColor: "lime",
+          height: "80vh", // defaults to 100vh
+          padding: "1em",
+        }}
+      >
+        1
+      </FPItem>
 
-export default class App extends Component {
-  render () {
-    return (
-      <Fullpage>
+      <FPItem
+        style={{
+          backgroundColor: "coral",
+          padding: "1em",
+        }}
+      >
+        2
+      </FPItem>
 
-        <FullPageSections>
-
-          <FullpageSection style={{
-            backgroundColor: 'lime',
-            height: '80vh',
-            padding: '1em',
-          }}>1</FullpageSection>
-          <FullpageSection style={{
-            backgroundColor: 'coral',
-            padding: '1em',
-          }}>2</FullpageSection>
-          <FullpageSection style={{
-            backgroundColor: 'firebrick',
-            padding: '1em',
-          }}>3</FullpageSection>
-
-        </FullPageSections>
-
-      </Fullpage>
-    )
-  }
-}
-
-Migation from previous version.
-Add the ``` <FullPageSections> ... </FullPageSections>```
-
+      <FPItem
+        style={{
+          backgroundColor: "firebrick",
+          padding: "1em",
+        }}
+      >
+        3
+      </FPItem>
+    </FPContainer>
+  </ReactFP>
+);
 ```
-
-### For IE
-
-```
-
-npm i babel-polyfill
-
-```
-
-```
-import "babel-polyfill";
-
-```
-
-
-## Mobile First
-
-![Android Phone](https://raw.githubusercontent.com/thierryc/react-fullpage/master/static/images/android-phone.jpg)
-
-
-## Dev
-
-open 2 terminal
-
-In the first terminals windows.
-
-
-```
-
-> npm i
-> npm link
-> npm start
-
-```
-
-
-In the second terminal
-
-```
-
-> cd example
-> npm i
-> npm link @ap.cx/react-fullpage
-> npm start
-
-```
-
-
-## Thanks
-
-Special thanks to [BrowserStack](https://www.browserstack.com/users/sign_up) for sponsoring this plugin. 👍
-
-[![Browserstack](https://raw.githubusercontent.com/thierryc/react-fullpage/master/static/images/browserstack@2x.png)](https://www.browserstack.com/users/sign_up)
 
 ## License (MIT)
 
